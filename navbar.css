@@ -1,24 +1,24 @@
-.navicon{
+.navicon {
     display: flex;
 }
 
-.icon{
+.icon {
     padding: 10px;
     display: flex;
     justify-self: start;
 }
 
-.navbar{
+.navbar {
     display: flex;
 }
 
-.navitems{
+.navitems {
     margin-right: 2%;
     margin-left: auto;
     display: flex;
 }
 
-a{
+a {
     color: white;
     font-family: sans-serif;
     font-weight: bold;
@@ -26,11 +26,11 @@ a{
     font-size: 17px;
 }
 
-.knop{
+.knop {
     padding: 10px;
 }
 
-.knop:hover{
+.knop:hover {
     transition-duration: 0.7s;
     color: lime;
 }
@@ -45,63 +45,69 @@ a{
     font-size: 14px;
     border: none;
     border-radius: 50%;
-  }
+}
 
-  .line{
+.line {
     background-color: white;
     width: 46px;
     height: 8px;
     margin: 10px;
     border-radius: 4px;
-  }
+    margin-left: auto;
+}
 
-  .linegroup:hover{
-    .line{
+.linegroup:hover {
+    .line {
         transition-duration: 0.7s;
         background-color: lime;
     }
-  }
+}
 
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .dropdown-content {
+.dropdown {
+    margin-right: 2%;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-content {
     display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
-    overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-  }
-  
-  .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-  }
-  
-  .dropdown a:hover {background-color: #ddd;}
-  
-  .show {display: block;}
+    padding-left: auto;
+}
 
-@media (width <= 600px){
-    .dropdown{
+.dropdown-content a {
+    color: color;
+    padding: 12px;
+    text-align: right;
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.dropdown a:hover {
+    color: lime;
+}
+
+.show {
+    display: block;
+}
+
+@media (width <=650px) {
+    .dropdown {
         display: flex;
     }
-    .navitems{
+
+    .navitems {
         display: none;
     }
 }
 
-@media (width > 600px){
-    .dropdown{
+@media (width > 650px) {
+    .dropdown {
         display: none;
     }
-    .navitems{
+
+    .navitems {
         display: flex;
     }
 }
