@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    height: 100%;
+}
+
+.backgroundimage {
+    background-image: url("images/homebackground.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    max-height: 100%;
+}
+
+.groeneknop {
+    background-color: transparent;
+    border: 2px solid lime;
+    border-radius: 5px;
+    padding: 10px;
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.groeneknop:hover {
+    transition-duration: 0.7s;
+    background-color: lime;
+}
+
+h1 {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 50px;
+}
+
+h2 {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 100;
+    text-decoration: none;
+    font-size: 25px;
+}
+
+h3 {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 100;
+    text-decoration: none;
+    font-size: 30px;
+}
+
+.center{
+    margin: auto;
+    text-align: center;
+    padding-top: 25vh;
+}
+
+.forms{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.centerknop {
+    background-color: transparent;
+    border: 2px solid lime;
+    border-radius: 5px;
+    padding: 10px;
+    width: 190px;
+    margin: auto;
+}
+
+.centerknop:hover {
+    transition-duration: 0.7s;
+    background-color: lime;
+}
+
+input[type=text],input[type=password]:focus {
+    border: 2px solid grey;
+  }
+  
+input[type=text],input[type=password] {
+    width: 300px;
+    border: 1px solid lightgrey;
+    padding: 5px 20px;
+    margin: 3px 0;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.formitem{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: 300px;
+    margin: auto;
+}
+
+@media (width <=600px) {
+    p {
+        font-size: 14px;
+    }
+}

@@ -19,13 +19,13 @@
             <h2 class="icon">Maaskantje</h2>
         </div>
         <div class="navitems">
-            <a href="index.html">
+            <a href="index.php">
                 <p class="knop">Home</p>
             </a>
-            <a href="register.html">
+            <a href="register.php">
                 <p class="knop">Registreren</p>
             </a>
-            <a href="login.html">
+            <a href="login.php">
                 <p class="groeneknop">Inloggen</p>
             </a>
         </div>
@@ -36,9 +36,9 @@
                 <div class="line"></div>
             </div>
             <div id="dropdownItems" class="dropdown-content">
-                <a href="index.html">Home</a>
-                <a href="register.html">Registreren</a>
-                <a href="login.html">Inloggen</a>
+                <a href="index.php">Home</a>
+                <a href="register.php">Registreren</a>
+                <a href="login.php">Inloggen</a>
             </div>
         </div>
     </div>
@@ -46,12 +46,12 @@
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
     <div class="forms">
-        <form action="login.html" method="post">
+        <form action="login.php" method="post">
             <div class="formitem">Email-adres<input type="text" name="email" value=""></div>
             <div class="formitem">Wachtwoord<input type="password" name="wachtwoord" value=""></div>
             <div class="formitem"><input class="groeneknop" type="submit" name="login" value="Log in"></div>
         </form>
-        <a href="register.html">
+        <a href="register.php">
             <p>Heb je nog geen account? Registreer je hier!</p>
         </a>
     </div>

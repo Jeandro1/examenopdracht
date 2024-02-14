@@ -19,13 +19,13 @@
             <h2 class="icon">Maaskantje</h2>
         </div>
         <div class="navitems">
-            <a href="index.html">
+            <a href="index.php">
                 <p class="knop">Home</p>
             </a>
-            <a href="register.html">
+            <a href="register.php">
                 <p class="knop">Registreren</p>
             </a>
-            <a href="login.html">
+            <a href="login.php">
                 <p class="groeneknop">Inloggen</p>
             </a>
         </div>
@@ -36,9 +36,9 @@
                 <div class="line"></div>
             </div>
             <div id="dropdownItems" class="dropdown-content">
-                <a href="index.html">Home</a>
-                <a href="register.html">Registreren</a>
-                <a href="login.html">Inloggen</a>
+                <a href="index.php">Home</a>
+                <a href="register.php">Registreren</a>
+                <a href="login.php">Inloggen</a>
             </div>
         </div>
     </div>
@@ -46,13 +46,23 @@
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
     <div class="forms">
-        <form action="login.html" method="post">
-            <div class="formitem">Email-adres<input type="text" name="email" value=""></div>
-            <div class="formitem">Wachtwoord<input type="password" name="wachtwoord" value=""></div>
-            <div class="formitem"><input class="groeneknop" type="submit" name="login" value="Log in"></div>
+        <form action="register.php" method="post">
+            <div class="formitem">Voornaam* <input type="text" name="voornaam" value=""></div>
+            <div class="formitem">Tussenvoegsel(s) <input type="text" name="tussenvoegsels" value=""></div>
+            <div class="formitem">Achternaam* <input type="text" name="achternaam" value=""></div>
+            <div class="formitem">Straat* <input type="text" name="straat" value=""></div>
+            <div class="formitem">Huisnummer* <input type="text" name="huisnummer" value=""></div>
+            <div class="formitem">Toevoeging <input type="text" name="toevoeging" value=""></div>
+            <div class="formitem">Plaats* <input type="text" name="plaats" value=""></div>
+            <div class="formitem">Email-adres* <input type="text" name="email" value=""></div>
+            <div class="formitem">Telefoonnummer* <input type="text" name="telefoonnummer" value=""></div>
+            <div class="formitem">Wachtwoord* <input type="password" name="wachtwoord" value=""></div>
+            <div class="formitem">Herhaal wachtwoord* <input type="password" name="herhaalWachtwoord" value=""></div>
+            <div class="formitem"><input class="groeneknop" type="submit" name="registreer" value="Registreer"></div>
         </form>
-        <a href="register.html">
-            <p>Heb je nog geen account? Registreer je hier!</p>
+
+        <a href="login.php">
+            <p>Heb je al een account? Log hier in!</p>
         </a>
     </div>
 
