@@ -91,8 +91,8 @@ input[type=text],input[type=password]:focus {
 input[type=text],input[type=password] {
     width: 300px;
     border: 1px solid lightgrey;
-    padding: 5px 20px;
-    margin: 3px 0;
+    padding: 6px 20px;
+    margin: 4px 0;
     border-radius: 5px;
     box-sizing: border-box;
 }
@@ -108,5 +108,16 @@ input[type=text],input[type=password] {
 @media (width <=600px) {
     p {
         font-size: 14px;
+    }
+    .forms{
+        font-size: 11px;
+    }
+    input[type=text],input[type=password] {
+        width: 300px;
+        border: 1px solid lightgrey;
+        padding: 3px 20px;
+        margin: 2px 0;
+        border-radius: 5px;
+        box-sizing: border-box;
     }
 }
