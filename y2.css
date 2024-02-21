@@ -1,0 +1,113 @@
+.navicon {
+    display: flex;
+}
+
+.icon {
+    display: flex;
+    justify-self: start;
+}
+
+.navbar {
+    display: flex;
+    background-color: sandybrown;
+}
+
+.navitems {
+    margin-right: 2%;
+    margin-left: auto;
+    display: flex;
+}
+
+a {
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.knop {
+    padding: 10px;
+}
+
+.knop:hover {
+    transition-duration: 0.7s;
+    color: lime;
+}
+
+/*-------------------------------------------------------------*/
+
+.dropbtn {
+    background-color: transparent;
+    color: white;
+    width: 80px;
+    height: 80px;
+    font-size: 14px;
+    border: none;
+    border-radius: 50%;
+}
+
+.line {
+    background-color: white;
+    width: 46px;
+    height: 8px;
+    margin: 10px;
+    border-radius: 4px;
+    margin-left: auto;
+}
+
+.linegroup:hover {
+    .line {
+        transition-duration: 0.7s;
+        background-color: lime;
+    }
+}
+
+.dropdown {
+    margin-right: 2%;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-content {
+    display: none;
+    padding-left: auto;
+}
+
+.dropdown-content a {
+    color: color;
+    padding: 12px;
+    text-align: right;
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.dropdown a:hover {
+    color: lime;
+}
+
+.show {
+    display: block;
+}
+
+@media (width <=650px) {
+    .dropdown {
+        display: flex;
+    }
+
+    .navitems {
+        display: none;
+    }
+}
+
+@media (width > 650px) {
+    .dropdown {
+        display: none;
+    }
+
+    .navitems {
+        display: flex;
+    }
+}

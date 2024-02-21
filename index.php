@@ -1,3 +1,12 @@
+<?php
+include('z2.php');
+session_start();
+
+if(isset($_SESSION["loggedin"])){
+    header("location:pakketten.php");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,8 +16,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voedselbank Maaskantje</title>
     <link rel="icon" type="image/png" href="images/icon.png">
-    <link rel="stylesheet" href="stylesheet.css">
-    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="x1.css">
+    <link rel="stylesheet" href="y1.css">
 </head>
 
 <body class="backgroundimage">
@@ -57,5 +66,5 @@
 
     <footer>
     </footer>
-    <script src="functions.js"></script>
+    <script src="z1.js"></script>
 </body>
