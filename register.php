@@ -54,7 +54,7 @@ if(isset($_SESSION["loggedin"])){
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
     <div class="forms">
-        <form action="register.php" method="post">
+        <form action="" method="post">
             <div class="formitem">Voornaam* <input type="text" name="voornaam" value=""></div>
             <div class="formitem">Tussenvoegsel(s) <input type="text" name="tussenvoegsels" value=""></div>
             <div class="formitem">Achternaam* <input type="text" name="achternaam" value=""></div>

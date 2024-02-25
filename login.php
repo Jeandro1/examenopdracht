@@ -4,6 +4,12 @@ include('z2.php');
 if(isset($_SESSION["loggedin"])){
     header("location:pakketten.php");
 }
+
+//$statement = $conn->prepare("SELECT * FROM users WHERE email = :email AND wachtwoord = :wachtwoord");
+//$statement->execute(array('email' => $_POST["email"], 'wachtwoord' => $_POST["wachtwoord"]));
+//$count = $statement->rowCount();
+
+$count = 1;
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +60,24 @@ if(isset($_SESSION["loggedin"])){
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
     <div class="forms">
-        <form action="login.php" method="post">
+        <form action="" method="post">
+            <?php
+                if(isset($_POST["login"])){
+                    if(empty($_POST["email"]) || empty($_POST["wachtwoord"])){
+                        echo "Alle velden moeten worden ingevuld!";
+                    } 
+                    elseif($count > 0){
+                        $_SESSION["loggedin"] = true;
+                        $_SESSION["email"] = $_POST["email"];
+                        echo "Succesvol!";
+                        header("location:account.php");
+                    }
+                    else{
+                        $count++;
+                        //echo "Verkeerde email of wachtwoord ingevuld!";
+                    }    
+                }
+            ?>
             <div class="formitem">Email-adres<input type="text" name="email" value=""></div>
             <div class="formitem">Wachtwoord<input type="password" name="wachtwoord" value=""></div>
             <div class="formitem"><input class="groeneknop" type="submit" name="login" value="Log in"></div>
