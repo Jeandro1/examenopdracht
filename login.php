@@ -21,8 +21,8 @@ $count = 1;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inloggen</title>
     <link rel="icon" type="image/png" href="images/icon.png">
-    <link rel="stylesheet" href="x1.css">
-    <link rel="stylesheet" href="y1.css">
+    <link rel="stylesheet" href="styling1.css">
+    <link rel="stylesheet" href="navbar1.css">
 </head>
 
 <body class="backgroundimage">

@@ -21,8 +21,8 @@ if($_SESSION["rol"] !== 1){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leveranciers</title>
     <link rel="icon" type="image/png" href="images/icon.png">
-    <link rel="stylesheet" href="x2.css">
-    <link rel="stylesheet" href="y2.css">
+    <link rel="stylesheet" href="styling2.css">
+    <link rel="stylesheet" href="navbar2.css">
 </head>
 
 <body>
