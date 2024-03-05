@@ -1,10 +1,4 @@
-<?php
-include('z2.php');
 
-if(isset($_SESSION["loggedin"])){
-    header("location:pakketten.php");
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">

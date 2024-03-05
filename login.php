@@ -1,15 +1,80 @@
 <?php
 include('z2.php');
 
+session_start();
+
 if(isset($_SESSION["loggedin"])){
     header("location:pakketten.php");
+    exit;
 }
 
-//$statement = $conn->prepare("SELECT * FROM users WHERE email = :email AND wachtwoord = :wachtwoord");
-//$statement->execute(array('email' => $_POST["email"], 'wachtwoord' => $_POST["wachtwoord"]));
-//$count = $statement->rowCount();
+$hostname = "localhost";
+$username = "root";
+$password = "";
+$database = "maaskantje";
 
-$count = 1;
+// Create a database connection
+$mysqli = new mysqli($hostname, $username, $password, $database);
+
+// Check the connection
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
+
+if (isset($_GET["loguit"])) {
+    $_SESSION = array();
+    session_destroy();
+}
+
+if (isset($_POST['groeneknop'])) {
+    $username = $_POST["login"];
+    $password = $_POST["pwd"];
+
+    // Prepare the SQL statement
+    $query = "SELECT * FROM mederwerker WHERE gebruikersnaam = ? AND wachtwoord = ?";
+    $stmt = $mysqli->prepare($query);
+
+    if (!$stmt) {
+        die("Error in SQL query: " . $mysqli->error);
+    }
+
+    // Bind parameters and execute the statement
+    if (!$stmt->bind_param("ss", $username, $password)) {
+        die("Error binding parameters: " . $stmt->error);
+    }
+
+    // Execute the statement
+    if (!$stmt->execute()) {
+        die("Error executing query: " . $stmt->error);
+    }
+
+    // Get the result
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        // User found in the database
+        $row = $result->fetch_assoc();
+        $_SESSION["gebruikersnaam"] = array(
+            "gebruikersnaam" => $row["gebruikersnaam"],
+            "wachtwoord" => $row["wachtwoord"],
+            "functie" => $row["functie"]
+        );
+
+        $message = "Welcome " . $_SESSION["gebruikersnaam"]["functie"] . " with the role " . $_SESSION["gebruikersnaam"]["functie"];
+
+        if ($_SESSION["gebruikersnaam"]["functie"] == "medewerker") {
+            // Redirect to the admin page
+            header("Location: voorraad.php");
+            exit;
+        }
+    } else {
+        // User not found in the database or password is incorrect
+        $message = "Login failed";
+    }
+}
+
+// Close the database connection
+$mysqli->close();
 ?>
 
 <!DOCTYPE html>
@@ -63,24 +128,16 @@ $count = 1;
         <form action="" method="post">
             <?php
                 if(isset($_POST["login"])){
-                    if(empty($_POST["email"]) || empty($_POST["wachtwoord"])){
+                    if(empty($_POST["login"]) || empty($_POST["pwd"])){
                         echo "Alle velden moeten worden ingevuld!";
-                    } 
-                    elseif($count > 0){
-                        $_SESSION["loggedin"] = true;
-                        $_SESSION["email"] = $_POST["email"];
-                        echo "Succesvol!";
-                        header("location:account.php");
-                    }
-                    else{
-                        $count++;
-                        //echo "Verkeerde email of wachtwoord ingevuld!";
+                    } else {
+                        // Do something when login is pressed
                     }    
                 }
             ?>
-            <div class="formitem">Email-adres<input type="text" name="email" value=""></div>
-            <div class="formitem">Wachtwoord<input type="password" name="wachtwoord" value=""></div>
-            <div class="formitem"><input class="groeneknop" type="submit" name="login" value="Log in"></div>
+            <div class="formitem">gebruikersnaam<input type="text" name="login" value=""></div>
+            <div class="formitem">Wachtwoord<input type="password" name="pwd" value=""></div>
+            <div class="formitem"><input class="groeneknop" type="submit" name="groeneknop" value="Log in"></div>
         </form>
         <a href="register.php">
             <p>Heb je nog geen account? Registreer je hier!</p>
@@ -93,3 +150,4 @@ $count = 1;
     </footer>
     <script src="z1.js"></script>
 </body>
+</html>

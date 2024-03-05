@@ -1,16 +1,3 @@
-<?php
-include('z2.php');
-
-if(!isset($_SESSION["loggedin"])){
-    header("location:login.php");
-}  
-
-/*
-if($_SESSION["rol"] !== 1){
-    header("location:account.php");
-}
-*/
-?>
 
 <!DOCTYPE html>
 <html lang="en">
