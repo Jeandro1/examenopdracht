@@ -59,5 +59,5 @@
 
     <footer>
     </footer>
-    <script src="z1.js"></script>
+    <script src="functions.js"></script>
 </body>

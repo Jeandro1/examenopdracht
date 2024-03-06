@@ -1,20 +1,10 @@
 <?php
-include('z2.php');
-
-session_start();
+include('db.php');
 
 if(isset($_SESSION["loggedin"])){
     header("location:pakketten.php");
     exit;
 }
-
-$hostname = "localhost";
-$username = "root";
-$password = "";
-$database = "maaskantje";
-
-// Create a database connection
-$mysqli = new mysqli($hostname, $username, $password, $database);
 
 // Check the connection
 if ($mysqli->connect_error) {
@@ -148,6 +138,6 @@ $mysqli->close();
 
     <footer>
     </footer>
-    <script src="z1.js"></script>
+    <script src="functions.js"></script>
 </body>
 </html>
