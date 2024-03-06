@@ -50,7 +50,7 @@
     <div class="center">
         <h1>Welkom bij Voedselbank Maaskantje</h1>
         <h3>Waar iedereen een goede maaltijd verdient</h3>
-        <a href="login.php">
+        <a href="gebruikers.php">
             <p class="centerknop">Stel een pakket samen</p>
         </a>
     </div>
