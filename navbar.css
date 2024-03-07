@@ -1,0 +1,46 @@
+.navicon {
+    display: flex;
+    justify-self: start;
+    width: 100px;
+    height: 100px;
+    padding: 10px;
+}
+
+.navbar1 {
+    display: flex;
+}
+
+.navbar2 {
+    display: flex;
+    background-color: sandybrown;
+}
+
+.navbar3 {
+    display: flex;
+    background-color: sandybrown;
+    justify-content: center;
+    width: auto;
+}
+
+.navitems {
+    margin-right: 2%;
+    margin-left: auto;
+    display: flex;
+}
+
+a {
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.knop {
+    padding: 10px;
+}
+
+.knop:hover {
+    transition-duration: 0.7s;
+    color: lime;
+}
