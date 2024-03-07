@@ -1,20 +1,10 @@
 <?php
-include('z2.php');
-
-session_start();
+include('db.php');
 
 if(isset($_SESSION["loggedin"])){
     header("location:pakketten.php");
     exit;
 }
-
-$hostname = "localhost";
-$username = "root";
-$password = "";
-$database = "maaskantje";
-
-// Create a database connection
-$mysqli = new mysqli($hostname, $username, $password, $database);
 
 // Check the connection
 if ($mysqli->connect_error) {
@@ -87,42 +77,22 @@ $mysqli->close();
     <title>Inloggen</title>
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling1.css">
-    <link rel="stylesheet" href="navbar1.css">
+    <link rel="stylesheet" href="navbar.css">
 </head>
 
-<body class="backgroundimage">
-
-    <div class="navbar">
-        <div class="navicon">
-            <img class="icon" src="images/icon.png" width="45px" height="45px" style="padding: 10px;">
-            <h2 class="icon">Maaskantje</h2>
-        </div>
+<body>
+    <div class="navbar1">
+        <img class="navicon" src="images/icon.png">
         <div class="navitems">
-            <a href="index.php">
-                <p class="knop">Home</p>
-            </a>
-            <a href="register.php">
-                <p class="knop">Registreren</p>
-            </a>
             <a href="login.php">
                 <p class="groeneknop">Inloggen</p>
             </a>
         </div>
-        <div class="dropdown">
-            <div class="linegroup" onclick="dropdownFunction()">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
-            </div>
-            <div id="dropdownItems" class="dropdown-content">
-                <a href="index.php">Home</a>
-                <a href="register.php">Registreren</a>
-                <a href="login.php">Inloggen</a>
-            </div>
-        </div>
     </div>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
+
+    <h4 class="center">Let op! Deze pagina is alleen voor medewerkers.</h4>
 
     <div class="forms">
         <form action="" method="post">
@@ -139,15 +109,11 @@ $mysqli->close();
             <div class="formitem">Wachtwoord<input type="password" name="pwd" value=""></div>
             <div class="formitem"><input class="groeneknop" type="submit" name="groeneknop" value="Log in"></div>
         </form>
-        <a href="register.php">
-            <p>Heb je nog geen account? Registreer je hier!</p>
-        </a>
     </div>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
     <footer>
     </footer>
-    <script src="z1.js"></script>
 </body>
 </html>

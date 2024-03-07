@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,38 +8,18 @@
     <title>Voedselbank Maaskantje</title>
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling1.css">
-    <link rel="stylesheet" href="navbar1.css">
+    <link rel="stylesheet" href="navbar.css">
 </head>
 
-<body class="backgroundimage">
-
-    <div class="navbar">
-        <div class="navicon">
-            <img class="icon" src="images/icon.png" width="45px" height="45px" style="padding: 10px;">
-            <h2 class="icon">Maaskantje</h2>
-        </div>
+<body>
+    <div class="navbar1">
+        <a href="index.php">
+            <img class="navicon" src="images/icon.png" href="index.php">
+        </a>
         <div class="navitems">
-            <a href="index.php">
-                <p class="knop">Home</p>
-            </a>
-            <a href="register.php">
-                <p class="knop">Registreren</p>
-            </a>
             <a href="login.php">
                 <p class="groeneknop">Inloggen</p>
             </a>
-        </div>
-        <div class="dropdown">
-            <div class="linegroup" onclick="dropdownFunction()">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
-            </div>
-            <div id="dropdownItems" class="dropdown-content">
-                <a href="index.php">Home</a>
-                <a href="register.php">Registreren</a>
-                <a href="login.php">Inloggen</a>
-            </div>
         </div>
     </div>
 
@@ -50,7 +28,11 @@
     <div class="center">
         <h1>Welkom bij Voedselbank Maaskantje</h1>
         <h3>Waar iedereen een goede maaltijd verdient</h3>
+<<<<<<< HEAD
         <a href="gebruikers.php">
+=======
+        <a href="pakketten.php">
+>>>>>>> 3f4feed15a92d112e96565d977d93d37342d496f
             <p class="centerknop">Stel een pakket samen</p>
         </a>
     </div>
@@ -59,5 +41,5 @@
 
     <footer>
     </footer>
-    <script src="z1.js"></script>
 </body>
+</html>
