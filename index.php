@@ -33,7 +33,7 @@
 =======
         <a href="pakketten.php">
 >>>>>>> 3f4feed15a92d112e96565d977d93d37342d496f
-            <p class="centerknop">Stel een pakket samen</p>
+            <p class="centerknop">Stel een pakket samen.</p>
         </a>
     </div>
 
