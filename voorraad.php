@@ -161,7 +161,7 @@ $result = $mysqli->query($query);
                 <th>Categorie</th>
                 <th>EAN</th>
                 <th>Aantal</th>
-                <th>Actie</th>
+                <th>Acties</th>
             </tr>
             <?php
             while($row = $result->fetch_assoc()) {
