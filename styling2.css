@@ -8,7 +8,7 @@ body {
     border: 2px solid lime;
     border-radius: 5px;
     padding: 10px;
-    color: white;
+    color: black;
     font-family: sans-serif;
     font-weight: bold;
     text-decoration: none;
@@ -18,10 +18,11 @@ body {
 .groeneknop:hover {
     transition-duration: 0.7s;
     background-color: lime;
+    color: white;
 }
 
 h1 {
-    color: white;
+    color: black;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 600;
     text-decoration: none;
@@ -29,7 +30,7 @@ h1 {
 }
 
 h2 {
-    color: white;
+    color: black;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 100;
     text-decoration: none;
@@ -37,49 +38,18 @@ h2 {
 }
 
 h3 {
-    color: white;
+    color: black;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 100;
     text-decoration: none;
     font-size: 30px;
 }
 
-.center{
-    margin: auto;
-    text-align: center;
-    padding-top: 25vh;
-}
-
-.forms{
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    color: white;
-    font-family: sans-serif;
-    font-weight: bold;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-.centerknop {
-    background-color: transparent;
-    border: 2px solid lime;
-    border-radius: 5px;
-    padding: 10px;
-    width: 190px;
-    margin: auto;
-}
-
-.centerknop:hover {
-    transition-duration: 0.7s;
-    background-color: lime;
-}
-
-input[type=text],input[type=password]:focus {
+input[type=text],input[type=password]:focus,input[type=number] {
     border: 2px solid grey;
-  }
+}
   
-input[type=text],input[type=password] {
+input[type=text],input[type=password],input[type=number] {
     width: 300px;
     border: 1px solid lightgrey;
     padding: 6px 20px;
@@ -88,12 +58,15 @@ input[type=text],input[type=password] {
     box-sizing: border-box;
 }
 
-.formitem{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    width: 300px;
-    margin: auto;
+table {
+    border: 2px solid sandybrown;
+    border-radius: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th,td{
+    border: 2px solid sandybrown;
 }
 
 @media (width <=600px) {
@@ -103,7 +76,7 @@ input[type=text],input[type=password] {
     .forms{
         font-size: 11px;
     }
-    input[type=text],input[type=password] {
+    input[type=text],input[type=password],input[type=number] {
         width: 300px;
         border: 1px solid lightgrey;
         padding: 3px 20px;

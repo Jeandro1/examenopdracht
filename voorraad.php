@@ -1,25 +1,14 @@
-<<<<<<< HEAD
 <?php
-session_start();
-
-// Databaseverbinding
-$hostname = "localhost";
-$username = "root";
-$password = "";
-$database = "maaskantje";
-
-$mysqli = new mysqli($hostname, $username, $password, $database);
+include('db.php');
 
 if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
 
 // Product toevoegen
-if(isset($_POST['toevoegen'])) {
-    $idmagazijn = $_POST['idmagazijn'];
+if (isset($_POST['toevoegen'])) {
     $product = $_POST['product'];
     $categorie = $_POST['categorie'];
-    $EAN = $_POST['EAN'];
     $aantal = $_POST['aantal'];
     $medewerker_id = 1; // Vervang 1 door de werkelijke ID van de medewerker
 
@@ -30,18 +19,21 @@ if(isset($_POST['toevoegen'])) {
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
 
-    if($check_result->num_rows > 0) {
+    if ($check_result->num_rows > 0) {
         echo "<script>alert('Dit product bestaat al.');</script>";
     } else {
-        // Voeg het product toe als het nog niet bestaat
-        $insert_query = "INSERT INTO magazijn (idmagazijn, product, categorie, EAN, aantal, mederwerker_idmederwerker) VALUES (?, ?, ?, ?, ?, ?)";
+        // Genereer een unieke EAN
+        $EAN = generateUniqueEAN($mysqli);
+
+        // Voeg het product toe
+        $insert_query = "INSERT INTO magazijn (product, categorie, EAN, aantal, mederwerker_idmederwerker) VALUES (?, ?, ?, ?, ?)";
         $insert_stmt = $mysqli->prepare($insert_query);
 
         if (!$insert_stmt) {
             die("Error in SQL query: " . $mysqli->error);
         }
 
-        if (!$insert_stmt->bind_param("isssii", $idmagazijn, $product, $categorie, $EAN, $aantal, $medewerker_id)) {
+        if (!$insert_stmt->bind_param("sssii", $product, $categorie, $EAN, $aantal, $medewerker_id)) {
             die("Error binding parameters: " . $insert_stmt->error);
         }
 
@@ -52,6 +44,26 @@ if(isset($_POST['toevoegen'])) {
         $insert_stmt->close();
     }
 }
+
+// Functie om een unieke EAN te genereren
+function generateUniqueEAN($mysqli) {
+    $EAN = rand(9000000000001, 9999999999999);
+
+    $check_query_EAN = "SELECT * FROM magazijn WHERE EAN = ?";
+    $check_stmt_EAN = $mysqli->prepare($check_query_EAN);
+    $check_stmt_EAN->bind_param("s", $EAN);
+    $check_stmt_EAN->execute();
+    $check_result_EAN = $check_stmt_EAN->get_result();
+    $check_stmt_EAN->close();
+
+    if ($check_result_EAN->num_rows > 0) {
+        // EAN bestaat al, genereer een nieuwe
+        $EAN = generateUniqueEAN($mysqli);
+    }
+
+    return $EAN;
+}
+
 
 // Product verwijderen
 if(isset($_POST['verwijderen'])) {
@@ -94,8 +106,6 @@ $query = "SELECT * FROM magazijn";
 $result = $mysqli->query($query);
 ?>
 
-=======
->>>>>>> 3f4feed15a92d112e96565d977d93d37342d496f
 <!DOCTYPE html>
 <html lang="en">
 
@@ -137,14 +147,10 @@ $result = $mysqli->query($query);
     <div class="toevoegen">
         <h2>Product toevoegen</h2>
         <form action="" method="post">
-            <label for="idmagazijn">id:</label><br>
-            <input type="number" id="idmagazijn" name="idmagazijn"><br>
             <label for="naam">Naam:</label><br>
             <input type="text" id="naam" name="product"><br>
             <label for="categorie">categorie:</label><br>
-            <textarea id="categorie" name="categorie"></textarea><br>
-            <label for="EAN">EAN:</label><br>
-            <input type="number" id="EAN" name="EAN" step="0.01"><br><br>
+            <input type="text" id="categorie" name="categorie"></input><br>
             <label for="aantal">Aantal:</label><br>
             <input type="number" id="aantal" name="aantal" min="1"><br><br>
             <input type="submit" value="Toevoegen" name="toevoegen">
@@ -157,9 +163,9 @@ $result = $mysqli->query($query);
         <table>
             <tr>
                 <th>idmagazijn</th>
+                <th>EAN</th>
                 <th>Naam</th>
                 <th>Categorie</th>
-                <th>EAN</th>
                 <th>Aantal</th>
                 <th>Acties</th>
             </tr>
@@ -167,9 +173,9 @@ $result = $mysqli->query($query);
             while($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td>".$row['idmagazijn']."</td>";
+                echo "<td>".$row['EAN']."</td>";
                 echo "<td>".$row['product']."</td>";
                 echo "<td>".$row['categorie']."</td>";
-                echo "<td>".$row['EAN']."</td>";
                 echo "<td>".$row['aantal']."</td>";
                 echo "<td>
                         <form action='' method='post'>
@@ -190,8 +196,4 @@ $result = $mysqli->query($query);
     <footer>
     </footer>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> 3f4feed15a92d112e96565d977d93d37342d496f

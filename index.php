@@ -28,12 +28,8 @@
     <div class="center">
         <h1>Welkom bij Voedselbank Maaskantje</h1>
         <h3>Waar iedereen een goede maaltijd verdient</h3>
-<<<<<<< HEAD
-        <a href="gebruikers.php">
-=======
         <a href="pakketten.php">
->>>>>>> 3f4feed15a92d112e96565d977d93d37342d496f
-            <p class="centerknop">Stel een pakket samen.</p>
+            <p class="centerknop">Stel een pakket samen</p>
         </a>
     </div>
 
