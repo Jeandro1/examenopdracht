@@ -12,12 +12,13 @@
 
 .navbar2 {
     display: flex;
-    background-color: sandybrown;
+    background-color: #173F5F;
+    ;
 }
 
 .navbar3 {
     display: flex;
-    background-color: sandybrown;
+    background-color: #173F5F;
     justify-content: center;
     width: auto;
 }

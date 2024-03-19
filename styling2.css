@@ -1,6 +1,8 @@
 body {
     margin: 0;
     height: 100%;
+    background: rgb(20, 20, 201);
+    background: linear-gradient(45deg, rgba(20, 20, 201, 1) 0%, rgba(255, 0, 249, 1) 100%);
 }
 
 .groeneknop {
@@ -30,7 +32,7 @@ h1 {
 }
 
 h2 {
-    color: black;
+    color: white;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 100;
     text-decoration: none;
@@ -38,18 +40,21 @@ h2 {
 }
 
 h3 {
-    color: black;
+    color: white;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 100;
     text-decoration: none;
     font-size: 30px;
 }
 
-input[type=text],input[type=password]:focus,input[type=number] {
+input[type=text],
+input[type=password]:focus,
+input[type=number] {
     border: 2px solid grey;
 }
-  
-input[type=text],input[type=password],input[type=number] {
+
+input[type=text],
+input[type=password] {
     width: 300px;
     border: 1px solid lightgrey;
     padding: 6px 20px;
@@ -58,25 +63,78 @@ input[type=text],input[type=password],input[type=number] {
     box-sizing: border-box;
 }
 
+input[type=number] {
+    width: 100px;
+    border: 1px solid lightgrey;
+    padding: 6px 20px;
+    margin: 4px 0;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
 table {
-    border: 2px solid sandybrown;
     border-radius: 15px;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    border-collapse: collapse;
+    width: 90vw;
+    border-radius: 40px;
 }
 
-th,td{
-    border: 2px solid sandybrown;
+th {
+    background-color: #173F5F;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 100;
+    text-decoration: none;
+    font-size: 15px;
+    border: none;
+    text-align: left;
+    height: 50px;
+    padding: 5px;
+}
+
+td {
+    background-color: white;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 100;
+    text-decoration: none;
+    font-size: 15px;
+    border: none;
+    padding: 10px;
+}
+
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+table tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
+table tr:first-child th:last-child {
+    border-top-right-radius: 10px;
 }
 
 @media (width <=600px) {
     p {
         font-size: 14px;
     }
-    .forms{
+
+    .forms {
         font-size: 11px;
     }
-    input[type=text],input[type=password],input[type=number] {
+
+    input[type=text],
+    input[type=password],
+    input[type=number] {
         width: 300px;
         border: 1px solid lightgrey;
         padding: 3px 20px;
