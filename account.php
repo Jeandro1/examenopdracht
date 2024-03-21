@@ -17,11 +17,11 @@
             <img class="navicon" src="images/icon.png" href="index.php">
         </a>
         <div class="navitems">
-            <a href="leveranciers.php">
-                <p class="knop">Leveranciers</p>
+            <a href="leveringen.php">
+                <p class="knop">Leveringen</p>
             </a>
-            <a href="gebruikers.php">
-                <p class="knop">Gebruikers</p>
+            <a href="klanten.php">
+                <p class="knop">Klanten</p>
             </a>
             <a href="voorraad.php">
                 <p class="knop">Voorraad</p>

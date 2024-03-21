@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gebruikers</title>
+    <title>Klanten</title>
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling2.css">
     <link rel="stylesheet" href="navbar.css">
@@ -17,11 +17,11 @@
             <img class="navicon" src="images/icon.png" href="index.php">
         </a>
         <div class="navitems">
-            <a href="leveranciers.php">
-                <p class="knop">Leveranciers</p>
+            <a href="leveringen.php">
+                <p class="knop">Leveringen</p>
             </a>
-            <a href="gebruikers.php">
-                <p class="knop">Gebruikers</p>
+            <a href="klanten.php">
+                <p class="knop">Klanten</p>
             </a>
             <a href="voorraad.php">
                 <p class="knop">Voorraad</p>
@@ -37,7 +37,7 @@
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
-    <p>Gebruikers</p>
+    <p>Klanten</p>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 

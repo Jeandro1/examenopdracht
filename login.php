@@ -21,7 +21,7 @@ if (isset($_POST['groeneknop'])) {
     $password = $_POST["pwd"];
 
     // Prepare the SQL statement
-    $query = "SELECT * FROM mederwerker WHERE gebruikersnaam = ? AND wachtwoord = ?";
+    $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ? AND wachtwoord = ?";
     $stmt = $mysqli->prepare($query);
 
     if (!$stmt) {
