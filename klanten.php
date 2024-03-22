@@ -17,8 +17,8 @@
             <img class="navicon" src="images/icon.png" href="index.php">
         </a>
         <div class="navitems">
-            <a href="leveringen.php">
-                <p class="knop">Leveringen</p>
+            <a href="leveranciers.php">
+                <p class="knop">Leveranciers</p>
             </a>
             <a href="klanten.php">
                 <p class="knop">Klanten</p>

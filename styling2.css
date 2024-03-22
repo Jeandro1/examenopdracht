@@ -1,8 +1,8 @@
 body {
     margin: 0;
-    height: 100%;
-    background: rgb(20, 20, 201);
-    background: linear-gradient(45deg, rgba(20, 20, 201, 1) 0%, rgba(255, 0, 249, 1) 100%);
+    height: 100vh;
+    background: lightgrey;
+    background: linear-gradient(45deg, lightgrey 0%, cornflowerblue 100%);
 }
 
 .groeneknop {

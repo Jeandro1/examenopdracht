@@ -13,7 +13,6 @@
 .navbar2 {
     display: flex;
     background-color: #173F5F;
-    ;
 }
 
 .navbar3 {
@@ -27,6 +26,7 @@
     margin-right: 2%;
     margin-left: auto;
     display: flex;
+    align-items: center;
 }
 
 a {

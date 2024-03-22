@@ -11,7 +11,7 @@ if (isset($_POST['toevoegen'])) {
     $categorie = $_POST['categorie'];
     $aantal = $_POST['aantal'];
 
-    $check_query = "SELECT * FROM magazijn WHERE product = ?";
+    $check_query = "SELECT * FROM product WHERE product = ?";
     $check_stmt = $mysqli->prepare($check_query);
     $check_stmt->bind_param("s", $product);
     $check_stmt->execute();
@@ -22,7 +22,7 @@ if (isset($_POST['toevoegen'])) {
     } else {
         $EAN = generateUniqueEAN($mysqli);
 
-        $insert_query = "INSERT INTO magazijn (product, categorie, EAN, aantal) VALUES (?, ?, ?, ?)";
+        $insert_query = "INSERT INTO product (product, categorie, EAN, aantal) VALUES (?, ?, ?, ?)";
         $insert_stmt = $mysqli->prepare($insert_query);
 
         if (!$insert_stmt) {
@@ -44,7 +44,7 @@ if (isset($_POST['toevoegen'])) {
 function generateUniqueEAN($mysqli) {
     $EAN = rand(9000000000001, 9999999999999);
 
-    $check_query_EAN = "SELECT * FROM magazijn WHERE EAN = ?";
+    $check_query_EAN = "SELECT * FROM product WHERE EAN = ?";
     $check_stmt_EAN = $mysqli->prepare($check_query_EAN);
     $check_stmt_EAN->bind_param("s", $EAN);
     $check_stmt_EAN->execute();
@@ -60,12 +60,12 @@ function generateUniqueEAN($mysqli) {
 
 // Product verwijderen
 if(isset($_POST['verwijderen'])) {
-    $idmagazijn = $_POST['idmagazijn'];
+    $idproduct = $_POST['idproduct'];
 
-    $delete_query = "DELETE FROM magazijn WHERE idmagazijn = ?";
+    $delete_query = "DELETE FROM product WHERE idproduct = ?";
     $delete_stmt = $mysqli->prepare($delete_query);
 
-    $delete_stmt->bind_param("i", $idmagazijn);
+    $delete_stmt->bind_param("i", $idproduct);
     $delete_stmt->execute();
 
     $delete_stmt->close();
@@ -73,17 +73,17 @@ if(isset($_POST['verwijderen'])) {
 
 // Aantal aanpassen
 if(isset($_POST['aanpassen'])) {
-    $idmagazijn = $_POST['idmagazijn'];
+    $idproduct = $_POST['idproduct'];
     $nieuw_aantal = $_POST['nieuw_aantal'];
 
-    $update_query = "UPDATE magazijn SET aantal = ? WHERE idmagazijn = ?";
+    $update_query = "UPDATE product SET aantal = ? WHERE idproduct = ?";
     $update_stmt = $mysqli->prepare($update_query);
 
     if (!$update_stmt) {
         die("Error in SQL query: " . $mysqli->error);
     }
 
-    if (!$update_stmt->bind_param("ii", $nieuw_aantal, $idmagazijn)) {
+    if (!$update_stmt->bind_param("ii", $nieuw_aantal, $idproduct)) {
         die("Error binding parameters: " . $update_stmt->error);
     }
 
@@ -119,10 +119,10 @@ if (!empty($search)) {
     $search_condition = "WHERE product LIKE '%$search%'";
 }
 
-$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idmagazijn';
+$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idproduct';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT * FROM magazijn";
+$query = "SELECT * FROM product";
 $result = $mysqli->query($query);
 
 $data = sortTable($columnName, $order, $result);
@@ -148,8 +148,8 @@ $data = sortTable($columnName, $order, $result);
             <img class="navicon" src="images/icon.png" href="index.php">
         </a>
         <div class="navitems">
-            <a href="leveringen.php">
-                <p class="knop">Leveringen</p>
+            <a href="leveranciers.php">
+                <p class="knop">Leveranciers</p>
             </a>
             <a href="klanten.php">
                 <p class="knop">Klanten</p>
@@ -195,7 +195,7 @@ $data = sortTable($columnName, $order, $result);
     <div class="overzicht">
         <table>
             <tr>
-                <th><a href="?sort=idmagazijn&order=<?= ($columnName === 'idmagazijn' && $order === 'asc' ? 'desc' : 'asc') ?>">idmagazijn</a></th>
+                <th><a href="?sort=idproduct&order=<?= ($columnName === 'idproduct' && $order === 'asc' ? 'desc' : 'asc') ?>">idproduct</a></th>
                 <th><a href="?sort=EAN&order=<?= ($columnName === 'EAN' && $order === 'asc' ? 'desc' : 'asc') ?>">EAN</a></th>
                 <th><a href="?sort=product&order=<?= ($columnName === 'product' && $order === 'asc' ? 'desc' : 'asc') ?>">Naam</a></th>
                 <th><a href="?sort=aantal&order=<?= ($columnName === 'aantal' && $order === 'asc' ? 'desc' : 'asc') ?>">Aantal</a></th>
@@ -210,14 +210,14 @@ $data = sortTable($columnName, $order, $result);
             <?php
             foreach ($data as $row) {
                 echo "<tr>";
-                echo "<td>".$row['idmagazijn']."</td>";
+                echo "<td>".$row['idproduct']."</td>";
                 echo "<td>".$row['EAN']."</td>";
                 echo "<td>".$row['product']."</td>";
                 echo "<td>".$row['aantal']."</td>";
                 echo "<td>".$row['categorie']."</td>";
                 echo "<td>
                         <form action='' method='post'>
-                            <input type='hidden' name='idmagazijn' value='".$row['idmagazijn']."'>
+                            <input type='hidden' name='idproduct' value='".$row['idproduct']."'>
                             <input type='number' name='nieuw_aantal' min='1' value='".$row['aantal']."'>
                             <input type='submit' value='Aanpassen' name='aanpassen'>
                             <input type='submit' value='Verwijderen' name='verwijderen'>
