@@ -42,7 +42,22 @@ if (isset($_POST['toevoegen'])) {
     }
 }
 
-// Medewerker verwijderen
+if(isset($_POST['aanpassen'])) {
+    $idmedewerker = $_POST['idmedewerker'];
+    $voornaam = $_POST['voornaam'];
+    $achternaam = $_POST['achternaam'];
+    $gebruikersnaam = $_POST['gebruikersnaam'];
+    $wachtwoord = $_POST['wachtwoord'];
+    $functie = $_POST['functie'];
+
+    $update_query = "UPDATE medewerker SET voornaam=?, achternaam=?, gebruikersnaam=?, wachtwoord=?, functie=? WHERE idmedewerker=?";
+    $update_stmt = $mysqli->prepare($update_query);
+    $update_stmt->bind_param("sssssi", $voornaam, $achternaam, $gebruikersnaam, $wachtwoord, $functie, $idmedewerker);
+    $update_stmt->execute();
+
+    $update_stmt->close();
+}
+
 if(isset($_POST['verwijderen'])) {
     $idmedewerker = $_POST['idmedewerker'];
 
@@ -152,6 +167,32 @@ $data = sortTable($columnName, $order, $result);
             <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
         </form>
     </div>
+
+    <div class="aanpassen">
+        <form action="" method="post">
+            <table>
+                <tr>
+                    <th>idMedewerker</th>
+                    <th>Voornaam</th>
+                    <th>Achternaam</th>
+                    <th>Gebruikersnaam</th>
+                    <th>Wachtwoord</th>
+                    <th>Functie</th>
+                    <th>Aanpassen</th>
+                </tr>
+                <td><input type="text" name="idmedewerker"></td>
+                <td><input type="text" name="voornaam"></td>
+                <td><input type="text" name="achternaam"></td>
+                <td><input type="text" name="gebruikersnaam"></td>
+                <td><input type="text" name="wachtwoord"></td>
+                <td><select name="functie">          
+                    <option value="vrijwilliger">Vrijwilliger</option>          
+                    <option value="magazijn">Magazijn</option>        
+                    <option value="directie">Directie</option>        
+                </select></td>
+            <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
+        </form>
+    </div>
     
     <div class="overzicht">
         <table>
@@ -181,7 +222,6 @@ $data = sortTable($columnName, $order, $result);
                 echo "<td>
                         <form action='' method='post'>
                             <input type='hidden' name='idmedewerker' value='".$row['idmedewerker']."'>
-                            <input type='submit' value='Aanpassen' name='aanpassen'>
                             <input type='submit' value='Verwijderen' name='verwijderen'>
                         </form>
                       </td>";
