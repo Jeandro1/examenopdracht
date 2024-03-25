@@ -55,16 +55,6 @@ input[type=number] {
 
 input[type=text],
 input[type=password] {
-    width: 300px;
-    border: 1px solid lightgrey;
-    padding: 6px 20px;
-    margin: 4px 0;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-.gebruikersinvoegen input[type=text],
-.gebruikersinvoegen input[type=password] {
     width: 150px;
     border: 1px solid lightgrey;
     padding: 6px 20px;
