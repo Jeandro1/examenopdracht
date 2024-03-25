@@ -169,7 +169,7 @@ $data = sortTable($columnName, $order, $result);
                 <td><input type="text" id="naam" name="naam"></td>
                 <td><input type="text" id="email" name="email"></td>
                 <td><input type="text" id="telefoonnummer" name="telefoonnummer" max="9"></td>
-                <td><input type="date" id="volgende_levering" name="volgende_levering"></td>
+                <td><input type="datetime-local" id="volgende_levering" name="volgende_levering"></td>
             <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
         </form>
     </div>
@@ -204,7 +204,7 @@ $data = sortTable($columnName, $order, $result);
                 echo "<td>
                         <form action='' method='post'>
                             <input type='hidden' name='idleverancier' value='".$row['idleverancier']."'>
-                            <input type='date' name='nieuw_volgende_levering' value='".$row['volgende_levering']."'>
+                            <input type='datetime-local' name='nieuw_volgende_levering' value='".$row['volgende_levering']."'>
                             <input type='submit' value='Aanpassen' name='aanpassen'>
                             <input type='submit' value='Verwijderen' name='verwijderen'>
                         </form>
