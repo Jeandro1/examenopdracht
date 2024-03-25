@@ -30,7 +30,7 @@ if (isset($_POST['loginknop'])) {
             "functie" => $row["functie"]
         );
 
-        if ($_SESSION["gebruikersnaam"]["functie"] == !empty) {
+        if (!empty($_SESSION["gebruikersnaam"]["functie"])) {
             header("Location: account.php");
         }
         else{
