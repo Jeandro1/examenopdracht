@@ -2,47 +2,27 @@
 include('db.php');
 
 if(isset($_SESSION["loggedin"])){
-    header("location:pakketten.php");
-    exit;
+    header("location:account.php");
 }
 
-// Check the connection
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
-if (isset($_GET["loguit"])) {
-    $_SESSION = array();
-    session_destroy();
-}
-
-if (isset($_POST['groeneknop'])) {
+if (isset($_POST['loginknop'])) {
     $username = $_POST["login"];
     $password = $_POST["pwd"];
 
-    // Prepare the SQL statement
     $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ? AND wachtwoord = ?";
     $stmt = $mysqli->prepare($query);
 
-    if (!$stmt) {
-        die("Error in SQL query: " . $mysqli->error);
-    }
-
-    // Bind parameters and execute the statement
     if (!$stmt->bind_param("ss", $username, $password)) {
         die("Error binding parameters: " . $stmt->error);
     }
 
-    // Execute the statement
     if (!$stmt->execute()) {
         die("Error executing query: " . $stmt->error);
     }
 
-    // Get the result
     $result = $stmt->get_result();
 
     if ($result->num_rows === 1) {
-        // User found in the database
         $row = $result->fetch_assoc();
         $_SESSION["gebruikersnaam"] = array(
             "gebruikersnaam" => $row["gebruikersnaam"],
@@ -50,20 +30,15 @@ if (isset($_POST['groeneknop'])) {
             "functie" => $row["functie"]
         );
 
-        $message = "Welcome " . $_SESSION["gebruikersnaam"]["functie"] . " with the role " . $_SESSION["gebruikersnaam"]["functie"];
-
-        if ($_SESSION["gebruikersnaam"]["functie"] == "medewerker") {
-            // Redirect to the admin page
-            header("Location: voorraad.php");
-            exit;
+        if ($_SESSION["gebruikersnaam"]["functie"] == !empty) {
+            header("Location: account.php");
         }
-    } else {
-        // User not found in the database or password is incorrect
+        else{
         $message = "Login failed";
+        }
     }
 }
 
-// Close the database connection
 $mysqli->close();
 ?>
 
@@ -107,7 +82,7 @@ $mysqli->close();
             ?>
             <div class="formitem">gebruikersnaam<input type="text" name="login" value=""></div>
             <div class="formitem">Wachtwoord<input type="password" name="pwd" value=""></div>
-            <div class="formitem"><input class="groeneknop" type="submit" name="groeneknop" value="Log in"></div>
+            <div class="formitem"><input class="groeneknop" type="submit" name="loginknop" value="Log in"></div>
         </form>
     </div>
 
