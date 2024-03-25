@@ -5,31 +5,32 @@ if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
 
-// Product toevoegen
+// medewerker toevoegen
 if (isset($_POST['toevoegen'])) {
-    $product = $_POST['product'];
-    $categorie = $_POST['categorie'];
-    $aantal = $_POST['aantal'];
+    $voornaam = $_POST['voornaam'];
+    $achternaam = $_POST['achternaam'];
+    $gebruikersnaam = $_POST['gebruikersnaam'];
+    $wachtwoord = $_POST['wachtwoord'];
+    $functie = $_POST['functie'];
 
-    $check_query = "SELECT * FROM product WHERE product = ?";
+    $check_query = "SELECT * FROM medewerker WHERE gebruikersnaam = ?";
     $check_stmt = $mysqli->prepare($check_query);
-    $check_stmt->bind_param("s", $product);
+    $check_stmt->bind_param("s", $gebruikersnaam);
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
 
     if ($check_result->num_rows > 0) {
-        echo "<script>alert('Dit product bestaat al.');</script>";
+        echo "<script>alert('Gebruikersnaam is al in gebruik.');</script>";
     } else {
-        $EAN = generateUniqueEAN($mysqli);
 
-        $insert_query = "INSERT INTO product (product, categorie, EAN, aantal) VALUES (?, ?, ?, ?)";
+        $insert_query = "INSERT INTO medewerker (voornaam, achternaam, gebruikersnaam, wachtwoord, functie) VALUES (?, ?, ?, ?, ?)";
         $insert_stmt = $mysqli->prepare($insert_query);
 
         if (!$insert_stmt) {
             die("Error in SQL query: " . $mysqli->error);
         }
 
-        if (!$insert_stmt->bind_param("sssi", $product, $categorie, $EAN, $aantal)) {
+        if (!$insert_stmt->bind_param("sssss", $voornaam, $achternaam, $gebruikersnaam, $wachtwoord, $functie)) {
             die("Error binding parameters: " . $insert_stmt->error);
         }
 
@@ -41,57 +42,17 @@ if (isset($_POST['toevoegen'])) {
     }
 }
 
-function generateUniqueEAN($mysqli) {
-    $EAN = rand(9000000000001, 9999999999999);
-
-    $check_query_EAN = "SELECT * FROM product WHERE EAN = ?";
-    $check_stmt_EAN = $mysqli->prepare($check_query_EAN);
-    $check_stmt_EAN->bind_param("s", $EAN);
-    $check_stmt_EAN->execute();
-    $check_result_EAN = $check_stmt_EAN->get_result();
-    $check_stmt_EAN->close();
-
-    if ($check_result_EAN->num_rows > 0) {
-        $EAN = generateUniqueEAN($mysqli);
-    }
-
-    return $EAN;
-}
-
-// Product verwijderen
+// Medewerker verwijderen
 if(isset($_POST['verwijderen'])) {
-    $idproduct = $_POST['idproduct'];
+    $idmedewerker = $_POST['idmedewerker'];
 
-    $delete_query = "DELETE FROM product WHERE idproduct = ?";
+    $delete_query = "DELETE FROM medewerker WHERE idmedewerker = ?";
     $delete_stmt = $mysqli->prepare($delete_query);
 
-    $delete_stmt->bind_param("i", $idproduct);
+    $delete_stmt->bind_param("i", $idmedewerker);
     $delete_stmt->execute();
 
     $delete_stmt->close();
-}
-
-// Aantal aanpassen
-if(isset($_POST['aanpassen'])) {
-    $idproduct = $_POST['idproduct'];
-    $nieuw_aantal = $_POST['nieuw_aantal'];
-
-    $update_query = "UPDATE product SET aantal = ? WHERE idproduct = ?";
-    $update_stmt = $mysqli->prepare($update_query);
-
-    if (!$update_stmt) {
-        die("Error in SQL query: " . $mysqli->error);
-    }
-
-    if (!$update_stmt->bind_param("ii", $nieuw_aantal, $idproduct)) {
-        die("Error binding parameters: " . $update_stmt->error);
-    }
-
-    if (!$update_stmt->execute()) {
-        die("Error executing query: " . $update_stmt->error);
-    }
-
-    $update_stmt->close();
 }
 
 function sortTable($columnName, $order, $result)
@@ -116,13 +77,13 @@ function sortTable($columnName, $order, $result)
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $search_condition = '';
 if (!empty($search)) {
-    $search_condition = "WHERE product LIKE '%$search%'";
+    $search_condition = "WHERE voornaam LIKE '%$search%'";
 }
 
-$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idproduct';
+$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idmedewerker';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT * FROM product";
+$query = "SELECT * FROM medewerker";
 $result = $mysqli->query($query);
 
 $data = sortTable($columnName, $order, $result);
@@ -195,11 +156,11 @@ $data = sortTable($columnName, $order, $result);
     <div class="overzicht">
         <table>
             <tr>
-                <th><a href="?sort=idproduct&order=<?= ($columnName === 'idproduct' && $order === 'asc' ? 'desc' : 'asc') ?>">idmedewerker</a></th>
-                <th><a href="?sort=EAN&order=<?= ($columnName === 'EAN' && $order === 'asc' ? 'desc' : 'asc') ?>">Voornaam</a></th>
-                <th><a href="?sort=product&order=<?= ($columnName === 'product' && $order === 'asc' ? 'desc' : 'asc') ?>">Achternaam</a></th>
-                <th><a href="?sort=aantal&order=<?= ($columnName === 'aantal' && $order === 'asc' ? 'desc' : 'asc') ?>">Gebruikersnaam</a></th>
-                <th><a href="?sort=categorie&order=<?= ($columnName === 'categorie' && $order === 'asc' ? 'desc' : 'asc') ?>">Functie</a></th>
+                <th><a href="?sort=idmedewerker&order=<?= ($columnName === 'idmedewerker' && $order === 'asc' ? 'desc' : 'asc') ?>">idmedewerker</a></th>
+                <th><a href="?sort=voornaam&order=<?= ($columnName === 'voornaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Voornaam</a></th>
+                <th><a href="?sort=achternaam&order=<?= ($columnName === 'achternaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Achternaam</a></th>
+                <th><a href="?sort=gebruikersnaam&order=<?= ($columnName === 'gebruikersnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Gebruikersnaam</a></th>
+                <th><a href="?sort=functie&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Functie</a></th>
                 <th>Wachtwoord</th>
                 <th>
                     <form action="" method="get">
@@ -211,14 +172,15 @@ $data = sortTable($columnName, $order, $result);
             <?php
             foreach ($data as $row) {
                 echo "<tr>";
-                echo "<td>".$row['idproduct']."</td>";
-                echo "<td>".$row['EAN']."</td>";
-                echo "<td>".$row['product']."</td>";
-                echo "<td>".$row['aantal']."</td>";
-                echo "<td>".$row['categorie']."</td>";
-                echo "<td>".$row['categorie']."</td>";
+                echo "<td>".$row['idmedewerker']."</td>";
+                echo "<td>".$row['voornaam']."</td>";
+                echo "<td>".$row['achternaam']."</td>";
+                echo "<td>".$row['gebruikersnaam']."</td>";
+                echo "<td>".$row['functie']."</td>";
+                echo "<td>".$row['wachtwoord']."</td>";
                 echo "<td>
                         <form action='' method='post'>
+                            <input type='hidden' name='idmedewerker' value='".$row['idmedewerker']."'>
                             <input type='submit' value='Aanpassen' name='aanpassen'>
                             <input type='submit' value='Verwijderen' name='verwijderen'>
                         </form>
