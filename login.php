@@ -25,6 +25,9 @@ if (isset($_POST['loginknop'])) {
     if ($result->num_rows === 1) {
         $row = $result->fetch_assoc();
         $_SESSION["gebruikersnaam"] = array(
+            "idmedewerker" => $row["idmedewerker"],
+            "voornaam" => $row["voornaam"],
+            "achternaam" => $row["achternaam"],
             "gebruikersnaam" => $row["gebruikersnaam"],
             "wachtwoord" => $row["wachtwoord"],
             "functie" => $row["functie"]

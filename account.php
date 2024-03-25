@@ -1,3 +1,7 @@
+<?php
+include('db.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,7 +41,55 @@
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
-    <p>Account</p>
+    <div class="gebruikersinvoegen">
+            <table>
+                <tr>
+                    <th>Voornaam</th>
+                    <th>Achternaam</th>
+                    <th>Gebruikersnaam</th>
+                    <th>Wachtwoord</th>
+                    <th>Herhaal wachtwoord</th>
+                    <th>Functie</th>
+                </tr>
+
+    <?php
+            if(isset($_SESSION['gebruikersnaam'])) {
+                echo "<tr>";
+                echo "<td>".$_SESSION['gebruikersnaam']['idmedewerker']."</td>";
+                echo "<td>".$_SESSION['gebruikersnaam']['voornaam']."</td>";
+                echo "<td>".$_SESSION['gebruikersnaam']['achternaam']."</td>";
+                echo "<td>".$_SESSION['gebruikersnaam']['gebruikersnaam']."</td>";
+                echo "<td>".$_SESSION['gebruikersnaam']['wachtwoord']."</td>";
+                echo "<td>".$_SESSION['gebruikersnaam']['functie']."</td>";
+                echo "</tr>";
+            } else {
+                header("location:login.php");
+            }
+    ?>
+</table>
+
+<div class="aanpassen">
+        <form action="" method="post">
+            <table>
+                <tr>
+                    <th>Wachtwoord aanpassen</th>
+                    <th><input type="submit" value="Aanpassen" name="aanpassen"></th>
+                </tr>
+                <tr>
+                    <td>Oud wachtwoord:</td>
+                    <td><input type="text" name="wachtwoord"></td>
+                </tr>
+                <tr>
+                    <td>Nieuw wachtwoord:</td>
+                    <td><input type="text" name="wachtwoord"></td>
+                </tr>
+                <tr>
+                    <td>Herhaal nieuw wachtwoord:</td>
+                    <td><input type="text" name="wachtwoord"></td>
+                </tr>
+        </form>
+    </div>
+</div>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
