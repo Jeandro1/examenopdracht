@@ -5,31 +5,34 @@ if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
 
-// Product toevoegen
+// gegevens toevoegen
 if (isset($_POST['toevoegen'])) {
-    $product = $_POST['product'];
-    $categorie = $_POST['categorie'];
-    $aantal = $_POST['aantal'];
+    $bedrijfsnaam = $_POST['bedrijfsnaam'];
+    $adres= $_POST['adres'];
+    $naam = $_POST['naam'];
+    $email	 = $_POST['email'];
+    $telefoonnummer = $_POST['telefoonnummer'];
+    $volgendelevering = $_POST['volgende_levering'];
 
-    $check_query = "SELECT * FROM pakket WHERE product = ?";
+    $check_query = "SELECT * FROM leverancier WHERE bedrijfsnaam = ?";
     $check_stmt = $mysqli->prepare($check_query);
-    $check_stmt->bind_param("s", $product);
+    $check_stmt->bind_param("s", $bedrijfsnaam);
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
 
     if ($check_result->num_rows > 0) {
-        echo "<script>alert('Dit product bestaat al.');</script>";
+        echo "<script>alert('Deze levering bestaat al.');</script>";
     } else {
-        $EAN = generateUniqueEAN($mysqli);
+    
 
-        $insert_query = "INSERT INTO pakket (product, categorie, EAN, aantal) VALUES (?, ?, ?, ?)";
+        $insert_query = "INSERT INTO leverancier (bedrijfsnaam, adres, naam, email, telefoonnummer,  volgende_levering) VALUES (?, ?, ?, ?, ?, ?)";
         $insert_stmt = $mysqli->prepare($insert_query);
 
         if (!$insert_stmt) {
             die("Error in SQL query: " . $mysqli->error);
         }
 
-        if (!$insert_stmt->bind_param("sssi", $product, $categorie, $EAN, $aantal)) {
+        if (!$insert_stmt->bind_param("ssssis", $bedrijfsnaam, $adres, $naam, $email, $telefoonnummer, $volgendelevering )) {
             die("Error binding parameters: " . $insert_stmt->error);
         }
 
@@ -41,31 +44,14 @@ if (isset($_POST['toevoegen'])) {
     }
 }
 
-function generateUniqueEAN($mysqli) {
-    $EAN = rand(9000000000001, 9999999999999);
-
-    $check_query_EAN = "SELECT * FROM pakket WHERE EAN = ?";
-    $check_stmt_EAN = $mysqli->prepare($check_query_EAN);
-    $check_stmt_EAN->bind_param("s", $EAN);
-    $check_stmt_EAN->execute();
-    $check_result_EAN = $check_stmt_EAN->get_result();
-    $check_stmt_EAN->close();
-
-    if ($check_result_EAN->num_rows > 0) {
-        $EAN = generateUniqueEAN($mysqli);
-    }
-
-    return $EAN;
-}
-
 // Product verwijderen
 if(isset($_POST['verwijderen'])) {
-    $idpakket = $_POST['idpakket'];
+    $idleverancier = $_POST['idleverancier'];
 
-    $delete_query = "DELETE FROM pakket WHERE idpakket = ?";
+    $delete_query = "DELETE FROM leverancier WHERE idleverancier = ?";
     $delete_stmt = $mysqli->prepare($delete_query);
 
-    $delete_stmt->bind_param("i", $idpakket);
+    $delete_stmt->bind_param("i", $idleverancier);
     $delete_stmt->execute();
 
     $delete_stmt->close();
@@ -73,17 +59,17 @@ if(isset($_POST['verwijderen'])) {
 
 // Aantal aanpassen
 if(isset($_POST['aanpassen'])) {
-    $idpakket = $_POST['idpakket'];
-    $nieuw_aantal = $_POST['nieuw_aantal'];
+    $idleverancier = $_POST['idleverancier'];
+    $nieuw_volgende_levering = $_POST[' $nieuw_volgende_levering'];
 
-    $update_query = "UPDATE pakket SET aantal = ? WHERE idpakket = ?";
+    $update_query = "UPDATE volgende_levering SET date = ? WHERE idleverancier = ?";
     $update_stmt = $mysqli->prepare($update_query);
 
     if (!$update_stmt) {
         die("Error in SQL query: " . $mysqli->error);
     }
 
-    if (!$update_stmt->bind_param("ii", $nieuw_aantal, $idpakket)) {
+    if (!$update_stmt->bind_param("ii", $ $nieuw_volgende_levering, $idleverancier)) {
         die("Error binding parameters: " . $update_stmt->error);
     }
 
@@ -116,13 +102,13 @@ function sortTable($columnName, $order, $result)
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $search_condition = '';
 if (!empty($search)) {
-    $search_condition = "WHERE product LIKE '%$search%'";
+    $search_condition = "WHERE leverancier LIKE '%$search%'";
 }
 
-$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idpakket';
+$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idleverancier';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT * FROM pakket";
+$query = "SELECT * FROM leverancier";
 $result = $mysqli->query($query);
 
 $data = sortTable($columnName, $order, $result);
@@ -136,7 +122,7 @@ $data = sortTable($columnName, $order, $result);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leveranciers</title>
+    <title>Voorraad</title>
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling2.css">
     <link rel="stylesheet" href="navbar.css">
@@ -166,28 +152,24 @@ $data = sortTable($columnName, $order, $result);
         </div>
     </div>
 
-    <div class="toevoegen">
+    <div class="gebruikersinvoegen">
         <form action="" method="post">
             <table>
                 <tr>
-                    <th>Naam</th>
-                    <th>Aantal</th>
-                    <th>Categorie</th>
-                    <th>Product toevoegen</th>
+                    <th>bedrijfsnaam</th>
+                    <th>adres</th>
+                    <th>naam</th>
+                    <th>email</th>
+                    <th>telefoonnummer</th>
+                    <th>volgende levering</th>
+                    <th>toevoegen</th>
                 </tr>
-                <td><input type="text" id="naam" name="product"></td>
-                <td><input type="number" id="aantal" name="aantal" min="1"></td>
-                <td><select name="categorie">          
-                    <option value="Aardappelen, groente en fruit">Aardappelen, groente en fruit</option>          
-                    <option value="Kaas en vleeswaren">Kaas en vleeswaren</option>        
-                    <option value="Zuivel, plantaardig en eiere">Zuivel, plantaardig en eieren</option>        
-                    <option value="Bakkerij en banket">Bakkerij en banket</option>       
-                    <option value="Frisdrank, sappen, koffie en thee">Frisdrank, sappen, koffie en thee</option>       
-                    <option value="Pasta, rijst en wereldkeuken">Pasta, rijst en wereldkeuken</option>       
-                    <option value="Soepen, sauzen, kruiden en olie">Soepen, sauzen, kruiden en olie</option>       
-                    <option value="Snoep, koek, chips en chocolade">Snoep, koek, chips en chocolade</option>     
-                    <option value="Baby, verzorging en hygiëne">Baby, verzorging en hygiëne</option>      
-                </select></td>
+                <td><input type="text" id="bedrijfsnaam" name="bedrijfsnaam"></td>
+                <td><input type="text" id="adres" name="adres" ></td>
+                <td><input type="text" id="naam" name="naam"></td>
+                <td><input type="text" id="email" name="email"></td>
+                <td><input type="text" id="telefoonnummer" name="telefoonnummer" max="9"></td>
+                <td><input type="date" id="volgende_levering" name="volgende_levering"></td>
             <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
         </form>
     </div>
@@ -195,11 +177,13 @@ $data = sortTable($columnName, $order, $result);
     <div class="overzicht">
         <table>
             <tr>
-                <th><a href="?sort=idpakket&order=<?= ($columnName === 'idpakket' && $order === 'asc' ? 'desc' : 'asc') ?>">idpakket</a></th>
-                <th><a href="?sort=EAN&order=<?= ($columnName === 'EAN' && $order === 'asc' ? 'desc' : 'asc') ?>">EAN</a></th>
-                <th><a href="?sort=product&order=<?= ($columnName === 'product' && $order === 'asc' ? 'desc' : 'asc') ?>">Naam</a></th>
-                <th><a href="?sort=aantal&order=<?= ($columnName === 'aantal' && $order === 'asc' ? 'desc' : 'asc') ?>">Aantal</a></th>
-                <th><a href="?sort=categorie&order=<?= ($columnName === 'categorie' && $order === 'asc' ? 'desc' : 'asc') ?>">Categorie</a></th>
+                <th><a href="?sort=idleverancier&order=<?= ($columnName === 'idleverancier' && $order === 'asc' ? 'desc' : 'asc') ?>">idleverancier</a></th>
+                <th><a href="?sort=bedrijfsnaam&order=<?= ($columnName === 'bedrijfsnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">bedrijfsnaam</a></th>
+                <th><a href="?sort=adres&order=<?= ($columnName === 'adres' && $order === 'asc' ? 'desc' : 'asc') ?>">adres</a></th>
+                <th><a href="?sort=naam&order=<?= ($columnName === 'naam' && $order === 'asc' ? 'desc' : 'asc') ?>">Naam</a></th>
+                <th><a href="?sort=email&order=<?= ($columnName === 'email' && $order === 'asc' ? 'desc' : 'asc') ?>">email</a></th>
+                <th><a href="?sort=telefoonnummer&order=<?= ($columnName === 'telefoonnummer' && $order === 'asc' ? 'desc' : 'asc') ?>">telefoonnummer</a></th>
+                <th><a href="?sort=volgende_levering&order=<?= ($columnName === 'volgende_levering' && $order === 'asc' ? 'desc' : 'asc') ?>">volgende levering</a></th>
                 <th>
                     <form action="" method="get">
                         <input type="text" name="search" placeholder="Zoeken...">
@@ -210,15 +194,17 @@ $data = sortTable($columnName, $order, $result);
             <?php
             foreach ($data as $row) {
                 echo "<tr>";
-                echo "<td>".$row['idpakket']."</td>";
-                echo "<td>".$row['EAN']."</td>";
-                echo "<td>".$row['product']."</td>";
-                echo "<td>".$row['aantal']."</td>";
-                echo "<td>".$row['categorie']."</td>";
+                echo "<td>".$row['idleverancier']."</td>";
+                echo "<td>".$row['bedrijfsnaam']."</td>";
+                echo "<td>".$row['adres']."</td>";
+                echo "<td>".$row['naam']."</td>";
+                echo "<td>".$row['email']."</td>";
+                echo "<td>".$row['telefoonnummer']."</td>";
+                echo "<td>".$row['volgende_levering']."</td>";
                 echo "<td>
                         <form action='' method='post'>
-                            <input type='hidden' name='idpakket' value='".$row['idpakket']."'>
-                            <input type='number' name='nieuw_aantal' min='1' value='".$row['aantal']."'>
+                            <input type='hidden' name='idleverancier' value='".$row['idleverancier']."'>
+                            <input type='date' name='nieuw_volgende_levering' value='".$row['volgende_levering']."'>
                             <input type='submit' value='Aanpassen' name='aanpassen'>
                             <input type='submit' value='Verwijderen' name='verwijderen'>
                         </form>
@@ -228,8 +214,7 @@ $data = sortTable($columnName, $order, $result);
             ?>
         </table>
     </div>
-
-
+  
     <?php
 
 
