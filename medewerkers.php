@@ -171,21 +171,22 @@ $data = sortTable($columnName, $order, $result);
                     <th>Functie</th>
                     <th>Toevoegen</th>
                 </tr>
-                <td><input type="text" name="voornaam"></td>
-                <td><input type="text" name="achternaam"></td>
-                <td><input type="text" name="gebruikersnaam"></td>
-                <td><input type="text" name="wachtwoord"></td>
-                <td><input type="text" name="herhaalwachtwoord"></td>
-                <td><select name="functie">          
+                    <td><input type="text" name="voornaam"></td>
+                    <td><input type="text" name="achternaam"></td>
+                    <td><input type="text" name="gebruikersnaam"></td>
+                    <td><input type="text" name="wachtwoord"></td>
+                    <td><input type="text" name="herhaalwachtwoord"></td>
+                    <td><select name="functie">          
                     <option value="vrijwilliger">Vrijwilliger</option>          
                     <option value="magazijn">Magazijn</option>        
                     <option value="directie">Directie</option>        
-                </select></td>
-            <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
+                    </select></td>
+                <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
+            </table>
         </form>
     </div>
 
-    <div class="aanpassen">
+    <div class="gebruikersinvoegen">
         <form action="" method="post">
             <table>
                 <tr>
@@ -197,17 +198,20 @@ $data = sortTable($columnName, $order, $result);
                     <th>Functie</th>
                     <th>Aanpassen</th>
                 </tr>
-                <td><input type="text" name="idmedewerker"></td>
-                <td><input type="text" name="voornaam"></td>
-                <td><input type="text" name="achternaam"></td>
-                <td><input type="text" name="gebruikersnaam"></td>
-                <td><input type="text" name="wachtwoord"></td>
-                <td><select name="functie">          
+                <tr>
+                    <td><input type="text" name="idmedewerker"></td>
+                    <td><input type="text" name="voornaam"></td>
+                    <td><input type="text" name="achternaam"></td>
+                    <td><input type="text" name="gebruikersnaam"></td>
+                    <td><input type="text" name="wachtwoord"></td>
+                    <td><select name="functie">          
                     <option value="vrijwilliger">Vrijwilliger</option>          
                     <option value="magazijn">Magazijn</option>        
                     <option value="directie">Directie</option>        
-                </select></td>
-            <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
+                    </select></td>
+                    <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
+                </tr>
+            </table>
         </form>
     </div>
     

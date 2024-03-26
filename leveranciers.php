@@ -61,25 +61,19 @@ if(isset($_POST['verwijderen'])) {
     $delete_stmt->close();
 }
 
-// Aantal aanpassen
 if(isset($_POST['aanpassen'])) {
     $idleverancier = $_POST['idleverancier'];
-    $nieuw_volgende_levering = $_POST[' $nieuw_volgende_levering'];
+    $bedrijfsnaam = $_POST['bedrijfsnaam'];
+    $adres = $_POST['adres'];
+    $naam = $_POST['naam'];
+    $email = $_POST['email'];
+    $telefoonnummer = $_POST['telefoonnummer'];
+    $volgendelevering = $_POST['volgende_levering'];
 
-    $update_query = "UPDATE volgende_levering SET date = ? WHERE idleverancier = ?";
+    $update_query = "UPDATE leverancier SET bedrijfsnaam=?, adres=?, naam=?, email=?, telefoonnummer=?, volgende_levering=? WHERE idleverancier=?";
     $update_stmt = $mysqli->prepare($update_query);
-
-    if (!$update_stmt) {
-        die("Error in SQL query: " . $mysqli->error);
-    }
-
-    if (!$update_stmt->bind_param("ii", $ $nieuw_volgende_levering, $idleverancier)) {
-        die("Error binding parameters: " . $update_stmt->error);
-    }
-
-    if (!$update_stmt->execute()) {
-        die("Error executing query: " . $update_stmt->error);
-    }
+    $update_stmt->bind_param("ssssssi", $bedrijfsnaam, $adres, $naam, $email, $telefoonnummer, $volgendelevering, $idleverancier);
+    $update_stmt->execute();
 
     $update_stmt->close();
 }
@@ -173,34 +167,64 @@ $data = sortTable($columnName, $order, $result);
         <form action="" method="post">
             <table>
                 <tr>
-                    <th>bedrijfsnaam</th>
-                    <th>adres</th>
-                    <th>naam</th>
-                    <th>email</th>
-                    <th>telefoonnummer</th>
-                    <th>volgende levering</th>
-                    <th>toevoegen</th>
+                    <th>Bedrijfsnaam</th>
+                    <th>Adres</th>
+                    <th>Naam contact</th>
+                    <th>Email contact</th>
+                    <th>Telefoonnummer</th>
+                    <th>Volgende levering</th>
+                    <th>Toevoegen</th>
                 </tr>
-                <td><input type="text" id="bedrijfsnaam" name="bedrijfsnaam"></td>
-                <td><input type="text" id="adres" name="adres" ></td>
-                <td><input type="text" id="naam" name="naam"></td>
-                <td><input type="text" id="email" name="email"></td>
-                <td><input type="text" id="telefoonnummer" name="telefoonnummer" max="9"></td>
-                <td><input type="datetime-local" id="volgende_levering" name="volgende_levering"></td>
-            <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
+                <tr>
+                   <td><input type="text" name="bedrijfsnaam"></td>
+                   <td><input type="text" name="adres" ></td>
+                   <td><input type="text" name="naam"></td>
+                   <td><input type="text" name="email"></td>
+                   <td><input type="text" name="telefoonnummer" max="9"></td>
+                   <td><input type="datetime-local" name="volgende_levering"></td>
+                   <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
+                </tr>   
+            </table>
+        </form>
+    </div>
+
+    <div class="gebruikersinvoegen">
+        <form action="" method="post">
+            <table>
+                <tr>
+                    <th>idLeverancier</th>
+                    <th>Bedrijfsnaam</th>
+                    <th>Adres</th>
+                    <th>Naam contact</th>
+                    <th>Email contact</th>
+                    <th>Telefoonnummer</th>
+                    <th>Volgende levering</th>
+                    <th>Aanpassen</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="idleverancier"></td>
+                    <td><input type="text" name="bedrijfsnaam"></td>
+                    <td><input type="text" name="adres"></td>
+                    <td><input type="text" name="naam"></td>
+                    <td><input type="text" name="email"></td>
+                    <td><input type="text" name="telefoonnummer" max="9"></td>
+                    <td><input type="datetime-local" id="volgende_levering" name="volgende_levering"></td>
+                    <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
+                </tr>
+            </table>
         </form>
     </div>
     
     <div class="overzicht">
         <table>
             <tr>
-                <th><a href="?sort=idleverancier&order=<?= ($columnName === 'idleverancier' && $order === 'asc' ? 'desc' : 'asc') ?>">idleverancier</a></th>
-                <th><a href="?sort=bedrijfsnaam&order=<?= ($columnName === 'bedrijfsnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">bedrijfsnaam</a></th>
-                <th><a href="?sort=adres&order=<?= ($columnName === 'adres' && $order === 'asc' ? 'desc' : 'asc') ?>">adres</a></th>
+                <th><a href="?sort=idleverancier&order=<?= ($columnName === 'idleverancier' && $order === 'asc' ? 'desc' : 'asc') ?>">idLeverancier</a></th>
+                <th><a href="?sort=bedrijfsnaam&order=<?= ($columnName === 'bedrijfsnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Bedrijfsnaam</a></th>
+                <th><a href="?sort=adres&order=<?= ($columnName === 'adres' && $order === 'asc' ? 'desc' : 'asc') ?>">Adres</a></th>
                 <th><a href="?sort=naam&order=<?= ($columnName === 'naam' && $order === 'asc' ? 'desc' : 'asc') ?>">Naam</a></th>
-                <th><a href="?sort=email&order=<?= ($columnName === 'email' && $order === 'asc' ? 'desc' : 'asc') ?>">email</a></th>
-                <th><a href="?sort=telefoonnummer&order=<?= ($columnName === 'telefoonnummer' && $order === 'asc' ? 'desc' : 'asc') ?>">telefoonnummer</a></th>
-                <th><a href="?sort=volgende_levering&order=<?= ($columnName === 'volgende_levering' && $order === 'asc' ? 'desc' : 'asc') ?>">volgende levering</a></th>
+                <th><a href="?sort=email&order=<?= ($columnName === 'email' && $order === 'asc' ? 'desc' : 'asc') ?>">Email</a></th>
+                <th><a href="?sort=telefoonnummer&order=<?= ($columnName === 'telefoonnummer' && $order === 'asc' ? 'desc' : 'asc') ?>">Telefoonnummer</a></th>
+                <th><a href="?sort=volgende_levering&order=<?= ($columnName === 'volgende_levering' && $order === 'asc' ? 'desc' : 'asc') ?>">Volgende levering</a></th>
                 <th>
                     <form action="" method="get">
                         <input type="text" name="search" placeholder="Zoeken...">
@@ -222,7 +246,6 @@ $data = sortTable($columnName, $order, $result);
                         <form action='' method='post'>
                             <input type='hidden' name='idleverancier' value='".$row['idleverancier']."'>
                             <input type='datetime-local' name='nieuw_volgende_levering' value='".$row['volgende_levering']."'>
-                            <input type='submit' value='Aanpassen' name='aanpassen'>
                             <input type='submit' value='Verwijderen' name='verwijderen'>
                         </form>
                       </td>";

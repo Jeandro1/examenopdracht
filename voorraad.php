@@ -75,25 +75,16 @@ if(isset($_POST['verwijderen'])) {
     $delete_stmt->close();
 }
 
-// Aantal aanpassen
 if(isset($_POST['aanpassen'])) {
     $idproduct = $_POST['idproduct'];
-    $nieuw_aantal = $_POST['nieuw_aantal'];
+    $product = $_POST['product'];
+    $categorie = $_POST['categorie'];
+    $aantal = $_POST['aantal'];
 
-    $update_query = "UPDATE product SET aantal = ? WHERE idproduct = ?";
+    $update_query = "UPDATE product SET product=?, categorie=?, aantal=? WHERE idproduct=?";
     $update_stmt = $mysqli->prepare($update_query);
-
-    if (!$update_stmt) {
-        die("Error in SQL query: " . $mysqli->error);
-    }
-
-    if (!$update_stmt->bind_param("ii", $nieuw_aantal, $idproduct)) {
-        die("Error binding parameters: " . $update_stmt->error);
-    }
-
-    if (!$update_stmt->execute()) {
-        die("Error executing query: " . $update_stmt->error);
-    }
+    $update_stmt->bind_param("sssi", $product, $categorie, $aantal, $idproduct);
+    $update_stmt->execute();
 
     $update_stmt->close();
 }
@@ -192,9 +183,10 @@ $data = sortTable($columnName, $order, $result);
                     <th>Categorie</th>
                     <th>Product toevoegen</th>
                 </tr>
-                <td><input type="text" id="naam" name="product"></td>
-                <td><input type="number" id="aantal" name="aantal" min="1"></td>
-                <td><select name="categorie">          
+                <tr>
+                    <td><input type="text" name="product"></td>
+                    <td><input type="number" name="aantal" min="1"></td>
+                    <td><select name="categorie">          
                     <option value="Aardappelen, groente en fruit">Aardappelen, groente en fruit</option>          
                     <option value="Kaas en vleeswaren">Kaas en vleeswaren</option>        
                     <option value="Zuivel, plantaardig en eiere">Zuivel, plantaardig en eieren</option>        
@@ -204,8 +196,41 @@ $data = sortTable($columnName, $order, $result);
                     <option value="Soepen, sauzen, kruiden en olie">Soepen, sauzen, kruiden en olie</option>       
                     <option value="Snoep, koek, chips en chocolade">Snoep, koek, chips en chocolade</option>     
                     <option value="Baby, verzorging en hygiëne">Baby, verzorging en hygiëne</option>      
-                </select></td>
-            <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
+                    </select></td>
+                    <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="gebruikersinvoegen">
+        <form action="" method="post">
+        <table>
+                <tr>
+                    <th>idProduct</th>
+                    <th>Naam</th>
+                    <th>Aantal</th>
+                    <th>Categorie</th>
+                    <th>Product toevoegen</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="idproduct"></td>
+                    <td><input type="text" name="product"></td>
+                    <td><input type="number" name="aantal" min="1"></td>
+                    <td><select name="categorie">          
+                    <option value="Aardappelen, groente en fruit">Aardappelen, groente en fruit</option>          
+                    <option value="Kaas en vleeswaren">Kaas en vleeswaren</option>        
+                    <option value="Zuivel, plantaardig en eiere">Zuivel, plantaardig en eieren</option>        
+                    <option value="Bakkerij en banket">Bakkerij en banket</option>       
+                    <option value="Frisdrank, sappen, koffie en thee">Frisdrank, sappen, koffie en thee</option>       
+                    <option value="Pasta, rijst en wereldkeuken">Pasta, rijst en wereldkeuken</option>       
+                    <option value="Soepen, sauzen, kruiden en olie">Soepen, sauzen, kruiden en olie</option>       
+                    <option value="Snoep, koek, chips en chocolade">Snoep, koek, chips en chocolade</option>     
+                    <option value="Baby, verzorging en hygiëne">Baby, verzorging en hygiëne</option>      
+                    </select></td>
+                    <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
+                </tr>
+            </table>
         </form>
     </div>
     
