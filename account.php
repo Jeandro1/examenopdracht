@@ -1,5 +1,10 @@
 <?php
 include('db.php');
+
+if(!isset($_SESSION['gebruikersnaam'])) {
+    header("location:login.php");
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -48,8 +53,6 @@ include('db.php');
                 <p class="knop">Account</p>
             </a>';
             }
-
-            
             ?>
         </div>
     </div>
@@ -59,11 +62,11 @@ include('db.php');
     <div class="gebruikersinvoegen">
             <table>
                 <tr>
+                    <th>idMedewerker</th>
                     <th>Voornaam</th>
                     <th>Achternaam</th>
                     <th>Gebruikersnaam</th>
                     <th>Wachtwoord</th>
-                    <th>Herhaal wachtwoord</th>
                     <th>Functie</th>
                 </tr>
 
@@ -77,8 +80,6 @@ include('db.php');
                 echo "<td>".$_SESSION['gebruikersnaam']['wachtwoord']."</td>";
                 echo "<td>".$_SESSION['gebruikersnaam']['functie']."</td>";
                 echo "</tr>";
-            } else {
-                header("location:login.php");
             }
     ?>
 </table>
@@ -102,8 +103,20 @@ include('db.php');
                     <td>Herhaal nieuw wachtwoord:</td>
                     <td><input type="text" name="wachtwoord"></td>
                 </tr>
+            </table>
         </form>
-    </div>
+</div>
+
+<div class="forms">
+    <form action="" method="post">
+        <?php
+        if(isset($_POST["loguitknop"])){
+            session_destroy();
+            header("location:login.php");
+        }
+        ?>
+        <div class="formitem"><input class="groeneknop" type="submit" name="loguitknop" value="Log uit"></div>
+    </form>
 </div>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->

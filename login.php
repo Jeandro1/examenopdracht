@@ -1,7 +1,7 @@
 <?php
 include('db.php');
 
-if(isset($_SESSION["loggedin"])){
+if(isset($_SESSION['gebruikersnaam'])) {
     header("location:account.php");
 }
 
@@ -75,12 +75,10 @@ $mysqli->close();
     <div class="forms">
         <form action="" method="post">
             <?php
-                if(isset($_POST["login"])){
+                if(isset($_POST["loginknop"])){
                     if(empty($_POST["login"]) || empty($_POST["pwd"])){
                         echo "Alle velden moeten worden ingevuld!";
-                    } else {
-                        // Do something when login is pressed
-                    }    
+                    }  
                 }
             ?>
             <div class="formitem">gebruikersnaam<input type="text" name="login" value=""></div>

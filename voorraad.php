@@ -1,6 +1,10 @@
 <?php
 include('db.php');
 
+if(!isset($_SESSION['gebruikersnaam'])) {
+    header("location:login.php");
+}
+
 if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
@@ -148,21 +152,34 @@ $data = sortTable($columnName, $order, $result);
             <img class="navicon" src="images/icon.png" href="index.php">
         </a>
         <div class="navitems">
-            <a href="leveranciers.php">
-                <p class="knop">Leveranciers</p>
-            </a>
-            <a href="klanten.php">
-                <p class="knop">Klanten</p>
-            </a>
-            <a href="voorraad.php">
-                <p class="knop">Voorraad</p>
-            </a>
-            <a href="pakketten.php">
-                <p class="knop">Pakketten</p>
-            </a>
-            <a href="account.php">
+            <?php 
+            if($_SESSION['gebruikersnaam']['functie'] == "directie"){
+                echo '<a href="medewerkers.php">
+                        <p class="knop">Medewerkers</p>
+                    </a>';
+            }
+            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "magazijn"){
+                echo '<a href="leveranciers.php">
+                        <p class="knop">Leveranciers</p>
+                    </a>
+                      <a href="voorraad.php">
+                        <p class="knop">Voorraad</p>
+                    </a>';
+            }
+            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "vrijwilliger"){
+                echo '<a href="klanten.php">
+                    <p class="knop">Klanten</p>
+                     </a>
+                   <a href="pakketten.php">
+                     <p class="knop">Pakketten</p>
+                   </a>';
+            }
+            if(!empty($_SESSION['gebruikersnaam']['functie'])){
+                echo '<a href="account.php">
                 <p class="knop">Account</p>
-            </a>
+            </a>';
+            }
+            ?>
         </div>
     </div>
 

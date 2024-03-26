@@ -1,3 +1,12 @@
+<?php
+include('db.php');
+
+if(!isset($_SESSION['gebruikersnaam'])) {
+    header("location:login.php");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,10 +21,40 @@
 </head>
 
 <body>
-    <div class="navbar3">
+    <div class="navbar2">
         <a href="index.php">
-            <img class="navicon navbar3" src="images/icon.png" href="index.php">
+            <img class="navicon" src="images/icon.png" href="index.php">
         </a>
+        <div class="navitems">
+            <?php 
+            if($_SESSION['gebruikersnaam']['functie'] == "directie"){
+                echo '<a href="medewerkers.php">
+                        <p class="knop">Medewerkers</p>
+                    </a>';
+            }
+            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "magazijn"){
+                echo '<a href="leveranciers.php">
+                        <p class="knop">Leveranciers</p>
+                    </a>
+                      <a href="voorraad.php">
+                        <p class="knop">Voorraad</p>
+                    </a>';
+            }
+            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "vrijwilliger"){
+                echo '<a href="klanten.php">
+                    <p class="knop">Klanten</p>
+                     </a>
+                   <a href="pakketten.php">
+                     <p class="knop">Pakketten</p>
+                   </a>';
+            }
+            if(!empty($_SESSION['gebruikersnaam']['functie'])){
+                echo '<a href="account.php">
+                <p class="knop">Account</p>
+            </a>';
+            }
+            ?>
+        </div>
     </div>
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
