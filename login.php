@@ -9,7 +9,7 @@ if (isset($_POST['loginknop'])) {
     $username = $_POST["login"];
     $password = $_POST["pwd"];
 
-    $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ? AND wachtwoord = ?";
+    $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ? AND wachtwoord = PASSWORD(?)";
     $stmt = $mysqli->prepare($query);
 
     if (!$stmt->bind_param("ss", $username, $password)) {

@@ -27,7 +27,7 @@ if (isset($_POST['toevoegen'])) {
         echo "<script>alert('Gebruikersnaam is al in gebruik.');</script>";
     } else {
 
-        $insert_query = "INSERT INTO medewerker (voornaam, achternaam, gebruikersnaam, wachtwoord, functie) VALUES (?, ?, ?, ?, ?)";
+        $insert_query = "INSERT INTO medewerker (voornaam, achternaam, gebruikersnaam, wachtwoord, functie) VALUES (?, ?, ?, PASSWORD(?), ?)";
         $insert_stmt = $mysqli->prepare($insert_query);
 
         if (!$insert_stmt) {
@@ -54,7 +54,7 @@ if(isset($_POST['aanpassen'])) {
     $wachtwoord = $_POST['wachtwoord'];
     $functie = $_POST['functie'];
 
-    $update_query = "UPDATE medewerker SET voornaam=?, achternaam=?, gebruikersnaam=?, wachtwoord=?, functie=? WHERE idmedewerker=?";
+    $update_query = "UPDATE medewerker SET voornaam=?, achternaam=?, gebruikersnaam=?, wachtwoord=PASSWORD(?), functie=? WHERE idmedewerker=?";
     $update_stmt = $mysqli->prepare($update_query);
     $update_stmt->bind_param("sssssi", $voornaam, $achternaam, $gebruikersnaam, $wachtwoord, $functie, $idmedewerker);
     $update_stmt->execute();
