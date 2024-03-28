@@ -117,10 +117,14 @@ if (!empty($search)) {
 $columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idproduct';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT * FROM product";
+$query = "SELECT product.idproduct, product.EAN, product.product, product.aantal, categorie.categorie FROM product
+INNER JOIN categorie ON product.categorie = categorie.idcategorie";
 $result = $mysqli->query($query);
 
 $data = sortTable($columnName, $order, $result);
+
+$resultcategoriequery = "SELECT * FROM categorie";
+$resultcategorie = $mysqli->query($resultcategoriequery);
 
 ?>
 
@@ -186,16 +190,12 @@ $data = sortTable($columnName, $order, $result);
                 <tr>
                     <td><input type="text" name="product"></td>
                     <td><input type="number" name="aantal" min="1"></td>
-                    <td><select name="categorie">          
-                    <option value="Aardappelen, groente en fruit">Aardappelen, groente en fruit</option>          
-                    <option value="Kaas en vleeswaren">Kaas en vleeswaren</option>        
-                    <option value="Zuivel, plantaardig en eiere">Zuivel, plantaardig en eieren</option>        
-                    <option value="Bakkerij en banket">Bakkerij en banket</option>       
-                    <option value="Frisdrank, sappen, koffie en thee">Frisdrank, sappen, koffie en thee</option>       
-                    <option value="Pasta, rijst en wereldkeuken">Pasta, rijst en wereldkeuken</option>       
-                    <option value="Soepen, sauzen, kruiden en olie">Soepen, sauzen, kruiden en olie</option>       
-                    <option value="Snoep, koek, chips en chocolade">Snoep, koek, chips en chocolade</option>     
-                    <option value="Baby, verzorging en hygiëne">Baby, verzorging en hygiëne</option>      
+                    <td><select name="categorie">
+                        <?php
+                        foreach($resultcategorie as $row){
+                            echo "<option value='" . $row['idcategorie'] . "'>" . $row['categorie'] . "</option>";
+                        }
+                        ?>  
                     </select></td>
                     <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
                 </tr>
@@ -205,30 +205,64 @@ $data = sortTable($columnName, $order, $result);
 
     <div class="gebruikersinvoegen">
         <form action="" method="post">
-        <table>
+            <table>
                 <tr>
                     <th>idProduct</th>
                     <th>Naam</th>
                     <th>Aantal</th>
                     <th>Categorie</th>
-                    <th>Product toevoegen</th>
+                    <th>Product Aanpassen</th>
                 </tr>
                 <tr>
                     <td><input type="text" name="idproduct"></td>
                     <td><input type="text" name="product"></td>
                     <td><input type="number" name="aantal" min="1"></td>
-                    <td><select name="categorie">          
-                    <option value="Aardappelen, groente en fruit">Aardappelen, groente en fruit</option>          
-                    <option value="Kaas en vleeswaren">Kaas en vleeswaren</option>        
-                    <option value="Zuivel, plantaardig en eiere">Zuivel, plantaardig en eieren</option>        
-                    <option value="Bakkerij en banket">Bakkerij en banket</option>       
-                    <option value="Frisdrank, sappen, koffie en thee">Frisdrank, sappen, koffie en thee</option>       
-                    <option value="Pasta, rijst en wereldkeuken">Pasta, rijst en wereldkeuken</option>       
-                    <option value="Soepen, sauzen, kruiden en olie">Soepen, sauzen, kruiden en olie</option>       
-                    <option value="Snoep, koek, chips en chocolade">Snoep, koek, chips en chocolade</option>     
-                    <option value="Baby, verzorging en hygiëne">Baby, verzorging en hygiëne</option>      
+                    <td><select name="categorie">
+                        <?php
+                        foreach($resultcategorie as $row){
+                            echo "<option value='" . $row['idcategorie'] . "'>" . $row['categorie'] . "</option>";
+                        }
+                        ?>  
                     </select></td>
                     <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="categorietoevoegen">
+        <form action="" method="post">
+            <table>
+                <tr>
+                    <th>Categorie</th>
+                    <th>Toevoegen</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="nieuwecategorie"></td>
+                    <td><input type="submit" value="Toevoegen" name="categorietoevoegen"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="categorieaanpassen">
+        <form action="" method="post">
+            <table>
+                <tr>
+                    <th>Categorie</th>
+                    <th>Aanpassen</th>
+                    <th>Verwijderen</th>
+                </tr>
+                <tr>
+                    <td><select name="categorie">
+                        <?php
+                        foreach($resultcategorie as $row){
+                            echo "<option value='" . $row['idcategorie'] . "'>" . $row['categorie'] . "</option>";
+                        }
+                        ?>  
+                    </select></td>
+                    <td><input type="submit" value="Aanpassen" name="categorieaanpassen"></td>
+                    <td><input type="submit" value="Verijderen" name="categorieverwijderen"></td>
                 </tr>
             </table>
         </form>
