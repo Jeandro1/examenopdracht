@@ -72,7 +72,7 @@ if(isset($_POST['aanpassen'])) {
 
     $update_query = "UPDATE leverancier SET bedrijfsnaam=?, adres=?, naam=?, email=?, telefoonnummer=?, volgende_levering=? WHERE idleverancier=?";
     $update_stmt = $mysqli->prepare($update_query);
-    $update_stmt->bind_param("ssssssi", $bedrijfsnaam, $adres, $naam, $email, $telefoonnummer, $volgendelevering, $idleverancier);
+    $update_stmt->bind_param("ssssisi", $bedrijfsnaam, $adres, $naam, $email, $telefoonnummer, $volgendelevering, $idleverancier);
     $update_stmt->execute();
 
     $update_stmt->close();
@@ -187,33 +187,6 @@ $data = sortTable($columnName, $order, $result);
             </table>
         </form>
     </div>
-
-    <div class="gebruikersinvoegen">
-        <form action="" method="post">
-            <table>
-                <tr>
-                    <th>idLeverancier</th>
-                    <th>Bedrijfsnaam</th>
-                    <th>Adres</th>
-                    <th>Naam contact</th>
-                    <th>Email contact</th>
-                    <th>Telefoonnummer</th>
-                    <th>Volgende levering</th>
-                    <th>Aanpassen</th>
-                </tr>
-                <tr>
-                    <td><input type="text" name="idleverancier"></td>
-                    <td><input type="text" name="bedrijfsnaam"></td>
-                    <td><input type="text" name="adres"></td>
-                    <td><input type="text" name="naam"></td>
-                    <td><input type="text" name="email"></td>
-                    <td><input type="text" name="telefoonnummer" max="9"></td>
-                    <td><input type="datetime-local" id="volgende_levering" name="volgende_levering"></td>
-                    <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
-                </tr>
-            </table>
-        </form>
-    </div>
     
     <div class="overzicht">
         <table>
@@ -231,6 +204,7 @@ $data = sortTable($columnName, $order, $result);
                         <input type="submit" value="Zoeken">
                     </form>
                 </th>
+                <th>Aanpassen</th>
             </tr>
             <?php
             foreach ($data as $row) {
@@ -249,9 +223,21 @@ $data = sortTable($columnName, $order, $result);
                             <input type='submit' value='Verwijderen' name='verwijderen'>
                         </form>
                       </td>";
-                echo "</tr>";
+                echo "<td>
+                <form action='' method='post'>
+                    <input type='hidden' name='idleverancier' value='". $row['idleverancier']. "'>
+                    <input type='text' name='bedrijfsnaam' value='". $row['bedrijfsnaam'] . "'>
+                    <input type='text' name='adres' value='". $row['adres'] . "'>
+                    <input type='text' name='naam' value='". $row['naam'] . "'>
+                    <input type='text' name='email' value='" . $row['email'] . "'>
+                    <input type='text' name='telefoonnummer' value='" . $row['telefoonnummer'] . "'>
+                    <input type='datetime-local' name='volgende_levering' value='". $row['volgende_levering'] . "'>
+                    <input type='submit' value='Opslaan' name='aanpassen'>
+                  </form>
+               </td>";
             }
             ?>
+            </tr>
         </table>
     </div>
   

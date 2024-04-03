@@ -5,11 +5,13 @@ if(isset($_SESSION['gebruikersnaam'])) {
     header("location:account.php");
 }
 
+$message = "";
+
 if (isset($_POST['loginknop'])) {
-    $username = $_POST["login"];
+    $username = $_POST["user"];
     $password = $_POST["pwd"];
 
-    $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ? AND wachtwoord = PASSWORD(?)";
+    $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ? OR wachtwoord = ?";
     $stmt = $mysqli->prepare($query);
 
     if (!$stmt->bind_param("ss", $username, $password)) {
@@ -22,23 +24,24 @@ if (isset($_POST['loginknop'])) {
 
     $result = $stmt->get_result();
 
-    if ($result->num_rows === 1) {
-        $row = $result->fetch_assoc();
-        $_SESSION["gebruikersnaam"] = array(
-            "idmedewerker" => $row["idmedewerker"],
-            "voornaam" => $row["voornaam"],
-            "achternaam" => $row["achternaam"],
-            "gebruikersnaam" => $row["gebruikersnaam"],
-            "wachtwoord" => $row["wachtwoord"],
-            "functie" => $row["functie"]
-        );
-
-        if (!empty($_SESSION["gebruikersnaam"]["functie"])) {
+    if ($row = mysqli_fetch_assoc($result)) {
+        $pwdCheck = password_verify($password, $row['wachtwoord']);
+        if($pwdCheck == true) {
+            $_SESSION["gebruikersnaam"] = array(
+                "idmedewerker" => $row["idmedewerker"],
+                "voornaam" => $row["voornaam"],
+                "achternaam" => $row["achternaam"],
+                "gebruikersnaam" => $row["gebruikersnaam"],
+                "wachtwoord" => $row["wachtwoord"],
+                "functie" => $row["functie"]
+            );
             header("Location: account.php");
+            exit();
+        } else {
+            $message = "Incorrecte gebruikersnaam of wachtwoord";
         }
-        else{
-        $message = "Login failed";
-        }
+    } else {
+        $message = "Gebruiker niet gevonden";
     }
 }
 
@@ -81,7 +84,7 @@ $mysqli->close();
                     }  
                 }
             ?>
-            <div class="formitem">gebruikersnaam<input type="text" name="login" value=""></div>
+            <div class="formitem">gebruikersnaam<input type="text" name="user" value=""></div>
             <div class="formitem">Wachtwoord<input type="password" name="pwd" value=""></div>
             <div class="formitem"><input class="groeneknop" type="submit" name="loginknop" value="Log in"></div>
         </form>

@@ -1,9 +1,9 @@
 <?php
 include('db.php');
 
-if(!isset($_SESSION['gebruikersnaam'])) {
-    header("location:login.php");
-}
+//if(!isset($_SESSION['gebruikersnaam'])) {
+//    header("location:login.php");
+//}
 
 if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
@@ -15,7 +15,17 @@ if (isset($_POST['toevoegen'])) {
     $achternaam = $_POST['achternaam'];
     $gebruikersnaam = $_POST['gebruikersnaam'];
     $wachtwoord = $_POST['wachtwoord'];
+    $herhaalwachtwoord = $_POST['herhaalwachtwoord'];
     $functie = $_POST['functie'];
+
+    if($wachtwoord !== $herhaalwachtwoord){
+        header("location:medewerkers.php");
+        $message = "Wachtwoorden komen niet overeen!";
+        exit();
+    }
+    else {
+
+    }
 
     $check_query = "SELECT * FROM medewerker WHERE gebruikersnaam = ?";
     $check_stmt = $mysqli->prepare($check_query);
@@ -27,14 +37,16 @@ if (isset($_POST['toevoegen'])) {
         echo "<script>alert('Gebruikersnaam is al in gebruik.');</script>";
     } else {
 
-        $insert_query = "INSERT INTO medewerker (voornaam, achternaam, gebruikersnaam, wachtwoord, functie) VALUES (?, ?, ?, PASSWORD(?), ?)";
+        $hashedwachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
+
+        $insert_query = "INSERT INTO medewerker (voornaam, achternaam, gebruikersnaam, wachtwoord, functie) VALUES (?, ?, ?, ?, ?)";
         $insert_stmt = $mysqli->prepare($insert_query);
 
         if (!$insert_stmt) {
             die("Error in SQL query: " . $mysqli->error);
         }
 
-        if (!$insert_stmt->bind_param("sssss", $voornaam, $achternaam, $gebruikersnaam, $wachtwoord, $functie)) {
+        if (!$insert_stmt->bind_param("sssss", $voornaam, $achternaam, $gebruikersnaam, $hashedwachtwoord, $functie)) {
             die("Error binding parameters: " . $insert_stmt->error);
         }
 
@@ -52,9 +64,10 @@ if(isset($_POST['aanpassen'])) {
     $achternaam = $_POST['achternaam'];
     $gebruikersnaam = $_POST['gebruikersnaam'];
     $wachtwoord = $_POST['wachtwoord'];
+    $herhaalwachtwoord = $_POST['herhaalwachtwoord'];
     $functie = $_POST['functie'];
 
-    $update_query = "UPDATE medewerker SET voornaam=?, achternaam=?, gebruikersnaam=?, wachtwoord=PASSWORD(?), functie=? WHERE idmedewerker=?";
+    $update_query = "UPDATE medewerker SET voornaam=?, achternaam=?, gebruikersnaam=?, wachtwoord=?, functie=? WHERE idmedewerker=?";
     $update_stmt = $mysqli->prepare($update_query);
     $update_stmt->bind_param("sssssi", $voornaam, $achternaam, $gebruikersnaam, $wachtwoord, $functie, $idmedewerker);
     $update_stmt->execute();
@@ -223,7 +236,6 @@ $data = sortTable($columnName, $order, $result);
                 <th><a href="?sort=achternaam&order=<?= ($columnName === 'achternaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Achternaam</a></th>
                 <th><a href="?sort=gebruikersnaam&order=<?= ($columnName === 'gebruikersnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Gebruikersnaam</a></th>
                 <th><a href="?sort=functie&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Functie</a></th>
-                <th>Wachtwoord</th>
                 <th>
                     <form action="" method="get">
                         <input type="text" name="search" placeholder="Zoeken...">
@@ -239,7 +251,6 @@ $data = sortTable($columnName, $order, $result);
                 echo "<td>".$row['achternaam']."</td>";
                 echo "<td>".$row['gebruikersnaam']."</td>";
                 echo "<td>".$row['functie']."</td>";
-                echo "<td>".$row['wachtwoord']."</td>";
                 echo "<td>
                         <form action='' method='post'>
                             <input type='hidden' name='idmedewerker' value='".$row['idmedewerker']."'>
