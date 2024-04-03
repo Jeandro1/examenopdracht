@@ -45,6 +45,40 @@ if (isset($_POST['toevoegen'])) {
     }
 }
 
+// Categorie toevoegen
+if (isset($_POST['categorietoevoegen'])) {
+    $nieuwecategorie = $_POST['nieuwecategorie'];
+
+    $check_query = "SELECT * FROM categorie WHERE categorie = ?";
+    $check_stmt = $mysqli->prepare($check_query);
+    $check_stmt->bind_param("s", $nieuwecategorie);
+    $check_stmt->execute();
+    $check_result = $check_stmt->get_result();
+
+    if ($check_result->num_rows > 0) {
+        echo "<script>alert('Deze categorie bestaat al.');</script>";
+    } else {
+        
+        $insert_query = "INSERT INTO categorie (categorie) VALUES (?)";
+        $insert_stmt = $mysqli->prepare($insert_query);
+
+        if (!$insert_stmt) {
+            die("Error in SQL query: " . $mysqli->error);
+        }
+
+        if (!$insert_stmt->bind_param("s", $nieuwecategorie)) {
+            die("Error binding parameters: " . $insert_stmt->error);
+        }
+
+        if (!$insert_stmt->execute()) {
+            die("Error executing query: " . $insert_stmt->error);
+        }
+
+        $insert_stmt->close();
+    }
+}
+
+
 function generateUniqueEAN($mysqli) {
     $EAN = rand(9000000000001, 9999999999999);
 
@@ -62,7 +96,7 @@ function generateUniqueEAN($mysqli) {
     return $EAN;
 }
 
-// Product verwijderen
+// Product aanpassen / verwijderen
 if(isset($_POST['verwijderen'])) {
     $idproduct = $_POST['idproduct'];
 
@@ -87,6 +121,31 @@ if(isset($_POST['aanpassen'])) {
     $update_stmt->execute();
 
     $update_stmt->close();
+}
+
+// Categorie aanpassen / verwijderen
+if(isset($_POST['categorieaanpassen'])) {
+    $idcategorie = $_POST['idcategorie'];
+    $gewijzigdecategorie = $_POST['gewijzigdecategorie'];
+
+    $update_query = "UPDATE categorie SET categorie=? WHERE idcategorie=?";
+    $update_stmt = $mysqli->prepare($update_query);
+    $update_stmt->bind_param("si", $gewijzigdecategorie, $idcategorie);
+    $update_stmt->execute();
+
+    $update_stmt->close();
+}
+
+if(isset($_POST['categorieverwijderen'])) {
+    $idcategorie = $_POST['idcategorie'];
+
+    $delete_query = "DELETE FROM categorie WHERE idcategorie = ?";
+    $delete_stmt = $mysqli->prepare($delete_query);
+
+    $delete_stmt->bind_param("i", $idcategorie);
+    $delete_stmt->execute();
+
+    $delete_stmt->close();
 }
 
 function sortTable($columnName, $order, $result)
@@ -114,7 +173,7 @@ if (!empty($search)) {
     $search_condition = "WHERE product LIKE '%$search%'";
 }
 
-$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idproduct';
+$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'product';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
 $query = "SELECT product.idproduct, product.EAN, product.product, product.aantal, categorie.categorie FROM product
@@ -190,7 +249,7 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
                 <tr>
                     <td><input type="text" name="product"></td>
                     <td><input type="number" name="aantal" min="1"></td>
-                    <td><select name="categorie">
+                    <td><select name="idcategorie">
                         <?php
                         foreach($resultcategorie as $row){
                             echo "<option value='" . $row['idcategorie'] . "'>" . $row['categorie'] . "</option>";
@@ -207,17 +266,15 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
         <form action="" method="post">
             <table>
                 <tr>
-                    <th>idProduct</th>
                     <th>Naam</th>
                     <th>Aantal</th>
                     <th>Categorie</th>
                     <th>Product Aanpassen</th>
                 </tr>
                 <tr>
-                    <td><input type="text" name="idproduct"></td>
                     <td><input type="text" name="product"></td>
                     <td><input type="number" name="aantal" min="1"></td>
-                    <td><select name="categorie">
+                    <td><select name="idcategorie">
                         <?php
                         foreach($resultcategorie as $row){
                             echo "<option value='" . $row['idcategorie'] . "'>" . $row['categorie'] . "</option>";
@@ -236,31 +293,22 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
                 <tr>
                     <th>Categorie</th>
                     <th>Toevoegen</th>
-                </tr>
-                <tr>
-                    <td><input type="text" name="nieuwecategorie"></td>
-                    <td><input type="submit" value="Toevoegen" name="categorietoevoegen"></td>
-                </tr>
-            </table>
-        </form>
-    </div>
-
-    <div class="categorieaanpassen">
-        <form action="" method="post">
-            <table>
-                <tr>
                     <th>Categorie</th>
+                    <th>Nieuwe categorie omschrijving</th>
                     <th>Aanpassen</th>
                     <th>Verwijderen</th>
                 </tr>
                 <tr>
-                    <td><select name="categorie">
+                    <td><input type="text" name="nieuwecategorie"></td>
+                    <td><input type="submit" value="Toevoegen" name="categorietoevoegen"></td>
+                    <td><select name="idcategorie">
                         <?php
                         foreach($resultcategorie as $row){
                             echo "<option value='" . $row['idcategorie'] . "'>" . $row['categorie'] . "</option>";
                         }
                         ?>  
                     </select></td>
+                    <td><input type="text" name="gewijzigdecategorie"></td>
                     <td><input type="submit" value="Aanpassen" name="categorieaanpassen"></td>
                     <td><input type="submit" value="Verijderen" name="categorieverwijderen"></td>
                 </tr>
@@ -271,7 +319,6 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
     <div class="overzicht">
         <table>
             <tr>
-                <th><a href="?sort=idproduct&order=<?= ($columnName === 'idproduct' && $order === 'asc' ? 'desc' : 'asc') ?>">idproduct</a></th>
                 <th><a href="?sort=EAN&order=<?= ($columnName === 'EAN' && $order === 'asc' ? 'desc' : 'asc') ?>">EAN</a></th>
                 <th><a href="?sort=product&order=<?= ($columnName === 'product' && $order === 'asc' ? 'desc' : 'asc') ?>">Naam</a></th>
                 <th><a href="?sort=aantal&order=<?= ($columnName === 'aantal' && $order === 'asc' ? 'desc' : 'asc') ?>">Aantal</a></th>
@@ -286,7 +333,6 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
             <?php
             foreach ($data as $row) {
                 echo "<tr>";
-                echo "<td>".$row['idproduct']."</td>";
                 echo "<td>".$row['EAN']."</td>";
                 echo "<td>".$row['product']."</td>";
                 echo "<td>".$row['aantal']."</td>";
@@ -294,7 +340,9 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
                 echo "<td>
                         <form action='' method='post'>
                             <input type='hidden' name='idproduct' value='".$row['idproduct']."'>
+                            <input type='text' name='nieuw_product' min='1' value='".$row['product']."'>
                             <input type='number' name='nieuw_aantal' min='1' value='".$row['aantal']."'>
+                            <input type='number' name='nieuw_categorie' min='1' value='".$row['categorie']."'>
                             <input type='submit' value='Aanpassen' name='aanpassen'>
                             <input type='submit' value='Verwijderen' name='verwijderen'>
                         </form>
