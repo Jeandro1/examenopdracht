@@ -33,7 +33,7 @@ if (isset($_POST['toevoegen'])) {
         $check_result = $check_stmt->get_result();
 
         if ($check_result->num_rows > 0) {
-            echo "<script>alert('Gebruikersnaam is al in gebruik.');</script>";
+            echo "<script>alert('Gebruikersnaam is al in gebruik!');</script>";
         } else {
 
             $hashedwachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
@@ -217,16 +217,5 @@ foreach ($data as $row) {
 ?>
         </table>
     </div>
-
-
-    <?php
-
-
-    
-    ?>
-    <!-- ----------------------------------------------------------------------------------------------------------- -->
-
-    <footer>
-    </footer>
 </body>
 </html>

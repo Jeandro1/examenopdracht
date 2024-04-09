@@ -277,7 +277,7 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
                foreach ($data as $row) {
     echo "<tr>";
     echo "
-        <form id='form_".$row['idproduct']."' action='' method='post' onsubmit='saveChangesProduct(event, ".$row['idproduct'].")'> <!-- Voeg onsubmit toe -->
+        <form id='form_".$row['idproduct']."' action='' method='post' onsubmit='return saveChangesProduct(event, ".$row['idproduct'].")'> <!-- Voeg onsubmit toe -->
             <input type='hidden' name='idproduct' value='". $row['idproduct']. "'>
             <td>
                 <span id='EAN_".$row['idproduct']."' style='display: block;'>".$row['EAN']."</span>
@@ -288,7 +288,7 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
             </td>
             <td>
                 <span id='aantal_".$row['idproduct']."' style='display: block;'>".$row['aantal']."</span>
-                <input id='aantalInput_".$row['idproduct']."' type='number' name='aantal' value='". $row['aantal'] . "' style='display: none;'>
+                <input id='aantalInput_".$row['idproduct']."' type='number' name='aantal' value='". $row['aantal'] . "' style='display: none;' required>
             </td>
             <td>
                 <span id='categorie_".$row['idproduct']."' style='display: block;'>".$row['categorie']."</span>
@@ -312,16 +312,5 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
 ?>
         </table>
     </div>
-
-
-    <?php
-
-
-    
-    ?>
-    <!-- ----------------------------------------------------------------------------------------------------------- -->
-
-    <footer>
-    </footer>
 </body>
 </html>

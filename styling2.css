@@ -55,7 +55,7 @@ input[type=number] {
 
 input[type=text],
 input[type=password] {
-    width: 300px;
+    width: 200px;
     border: 1px solid lightgrey;
     padding: 6px 20px;
     margin: 4px 0;
