@@ -24,6 +24,7 @@ if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger")
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling2.css">
     <link rel="stylesheet" href="navbar.css">
+    <script src="functions.js"></script>
 </head>
 
 <body>

@@ -130,6 +130,7 @@ $data = sortTable($columnName, $order, $result);
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling2.css">
     <link rel="stylesheet" href="navbar.css">
+    <script src="functions.js"></script>
 </head>
 
 <body>
@@ -178,31 +179,42 @@ $data = sortTable($columnName, $order, $result);
                 </th>
             </tr>
             <?php
-            foreach ($data as $row) {
-                echo "<tr>";
-                echo "<td>".$row['voornaam']."</td>";
-                echo "<td>".$row['achternaam']."</td>";
-                echo "<td>".$row['gebruikersnaam']."</td>";
-                echo "<td>".$row['functie']."</td>";
-                echo "<td>
-                <form action='' method='post'>
-                    <input type='hidden' name='idmedewerker' value='". $row['idmedewerker']. "'>
-                    <input type='text' name='voornaam' value='". $row['voornaam'] . "'>
-                    <input type='text' name='achternaam' value='". $row['achternaam'] . "'>
-                    <input type='text' name='gebruikersnaam' value='". $row['gebruikersnaam'] . "'>
-                    <select name='functie'>          
+foreach ($data as $row) {
+    echo "<tr>";
+    echo "
+        <form id='form_".$row['idmedewerker']."' action='' method='post' onsubmit='saveChangesMedewerkers(event, ".$row['idmedewerker'].")'> <!-- Voeg onsubmit toe -->
+            <input type='hidden' name='idmedewerker' value='". $row['idmedewerker']. "'>
+            <td>
+                <span id='voornaam_".$row['idmedewerker']."' style='display: block;'>".$row['voornaam']."</span>
+                <input id='voornaamInput_".$row['idmedewerker']."' type='text' name='voornaam' value='". $row['voornaam'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='achternaam_".$row['idmedewerker']."' style='display: block;'>".$row['achternaam']."</span>
+                <input id='achternaamInput_".$row['idmedewerker']."' type='text' name='achternaam' value='". $row['achternaam'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='gebruikersnaam_".$row['idmedewerker']."' style='display: block;'>".$row['gebruikersnaam']."</span>
+                <input id='gebruikersnaamInput_".$row['idmedewerker']."' type='text' name='gebruikersnaam' value='". $row['gebruikersnaam'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='functie_".$row['idmedewerker']."' style='display: block;'>".$row['functie']."</span>
+                <select id='functieSelect_".$row['idmedewerker']."' name='functie' style='display: none;'>          
                     <option value='vrijwilliger'>Vrijwilliger</option>          
                     <option value='magazijn'>Magazijn</option>        
                     <option value='directie'>Directie</option>
                     <option value='geblokkeerd'>Geblokkeerd</option>          
-                    </select>
-                    <input type='submit' value='Opslaan' name='aanpassen'>
-                    <input type='submit' value='Verwijderen' name='verwijderen'>
-                  </form>
-               </td>";
-                echo "</tr>";
-            }
-            ?>
+                </select>
+            </td>
+            <td>
+                <button id='aanpassenButton_".$row['idmedewerker']."' type='button' onclick='openFormMedewerkers(".$row['idmedewerker'].")'>Aanpassen</button>
+                <input id='saveButton_".$row['idmedewerker']."' type='submit' value='Opslaan' name='aanpassen' style='display: none;'>
+                <input id='deleteButton_".$row['idmedewerker']."' type='submit' value='Verwijderen' name='verwijderen' style='display: none;'>
+            </td>
+        </form>
+    ";
+    echo "</tr>";
+}
+?>
         </table>
     </div>
 

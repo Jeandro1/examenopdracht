@@ -122,10 +122,11 @@ $data = sortTable($columnName, $order, $result);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voorraad</title>
+    <title>Leveranciers</title>
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling2.css">
     <link rel="stylesheet" href="navbar.css">
+    <script src="functions.js"></script>
 </head>
 
 <body>
@@ -171,30 +172,47 @@ $data = sortTable($columnName, $order, $result);
                         <input type="submit" value="Zoeken">
                     </form>
             </tr>
-            <?php
-            foreach ($data as $row) {
-                echo "<tr>";
-                echo "<td>".$row['bedrijfsnaam']."</td>";
-                echo "<td>".$row['adres']."</td>";
-                echo "<td>".$row['naam']."</td>";
-                echo "<td>".$row['email']."</td>";
-                echo "<td>".$row['telefoonnummer']."</td>";
-                echo "<td>".$row['volgende_levering']."</td>";
-                echo "<td>
-                <form action='' method='post'>
-                    <input type='hidden' name='idleverancier' value='". $row['idleverancier']. "'>
-                    <input type='text' name='bedrijfsnaam' value='". $row['bedrijfsnaam'] . "'>
-                    <input type='text' name='adres' value='". $row['adres'] . "'>
-                    <input type='text' name='naam' value='". $row['naam'] . "'>
-                    <input type='text' name='email' value='" . $row['email'] . "'>
-                    <input type='text' name='telefoonnummer' value='" . $row['telefoonnummer'] . "'>
-                    <input type='datetime-local' name='volgende_levering' value='". $row['volgende_levering'] . "'>
-                    <input type='submit' value='Opslaan' name='aanpassen'>
-                    <input type='submit' value='Verwijderen' name='verwijderen'>
-                  </form>
-               </td>";
-            }
-            ?>
+<?php
+foreach ($data as $row) {
+    echo "<tr>";
+    echo "
+        <form action='' method='post' onsubmit='saveChangesLeveranciers(event, ".$row['idleverancier'].")'> <!-- Voeg onsubmit toe -->
+            <input type='hidden' name='idleverancier' value='". $row['idleverancier']. "'>
+            <td>
+                <span id='bedrijfsnaam_".$row['idleverancier']."' style='display: block;'>".$row['bedrijfsnaam']."</span>
+                <input id='bedrijfsnaamInput_".$row['idleverancier']."' type='text' name='bedrijfsnaam' value='". $row['bedrijfsnaam'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='adres_".$row['idleverancier']."' style='display: block;'>".$row['adres']."</span>
+                <input id='adresInput_".$row['idleverancier']."' type='text' name='adres' value='". $row['adres'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='naam_".$row['idleverancier']."' style='display: block;'>".$row['naam']."</span>
+                <input id='naamInput_".$row['idleverancier']."' type='text' name='naam' value='". $row['naam'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='email_".$row['idleverancier']."' style='display: block;'>".$row['email']."</span>
+                <input id='emailInput_".$row['idleverancier']."' type='text' name='email' value='". $row['email'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='telefoonnummer_".$row['idleverancier']."' style='display: block;'>".$row['telefoonnummer']."</span>
+                <input id='telefoonnummerInput_".$row['idleverancier']."' type='text' name='telefoonnummer' value='". $row['telefoonnummer'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='volgende_levering_".$row['idleverancier']."' style='display: block;'>".$row['volgende_levering']."</span>
+                <input id='volgende_leveringInput_".$row['idleverancier']."' type='datetime-local' name='volgende_levering' value='". date('Y-m-d\TH:i', strtotime($row['volgende_levering'])) . "' style='display: none;'>
+            </td>
+            <td>
+                <button type='button' onclick='openFormLeveranciers(".$row['idleverancier'].")'>Aanpassen</button>
+                <input id='saveButton_".$row['idleverancier']."' type='submit' value='Opslaan' name='aanpassen' style='display: none;'>
+                <input id='deleteButton_".$row['idleverancier']."' type='submit' value='Verwijderen' name='verwijderen' style='display: none;'>
+            </td>
+        </form>
+    ";
+    echo "</tr>";
+}
+?>
+
             </tr>
         </table>
     </div>

@@ -199,6 +199,7 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling2.css">
     <link rel="stylesheet" href="navbar.css">
+    <script src="functions.js"></script>
 </head>
 
 <body>
@@ -274,27 +275,41 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
             </tr>
             <?php
                foreach ($data as $row) {
-                   echo "<tr>";
-                   echo "<td>".$row['EAN']."</td>";
-                   echo "<td>".$row['product']."</td>";
-                   echo "<td>".$row['aantal']."</td>";
-                   echo "<td>".$row['categorie']."</td>";
-                   echo "<td>
-                       <form action='' method='post'>
-                           <input type='hidden' name='idproduct' value='". $row['idproduct']. "'>
-                           <input type='text' name='product' value='". $row['product'] . "'>
-                           <input type='number' name='aantal' value='". $row['aantal'] . "'>
-                           <select name='categorie'>";
-                    foreach($resultcategorie as $categorieRow){
-                        echo "<option value='" . $categorieRow['categorie'] . "'>" . $categorieRow['categorie'] . "</option>";
+    echo "<tr>";
+    echo "
+        <form id='form_".$row['idproduct']."' action='' method='post' onsubmit='saveChangesProduct(event, ".$row['idproduct'].")'> <!-- Voeg onsubmit toe -->
+            <input type='hidden' name='idproduct' value='". $row['idproduct']. "'>
+            <td>
+                <span id='EAN_".$row['idproduct']."' style='display: block;'>".$row['EAN']."</span>
+            </td>
+            <td>
+                <span id='product_".$row['idproduct']."' style='display: block;'>".$row['product']."</span>
+                <input id='productInput_".$row['idproduct']."' type='text' name='product' value='". $row['product'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='aantal_".$row['idproduct']."' style='display: block;'>".$row['aantal']."</span>
+                <input id='aantalInput_".$row['idproduct']."' type='number' name='aantal' value='". $row['aantal'] . "' style='display: none;'>
+            </td>
+            <td>
+                <span id='categorie_".$row['idproduct']."' style='display: block;'>".$row['categorie']."</span>
+                <select id='categorieSelect_".$row['idproduct']."' name='categorie' style='display: none;'>";
+
+                    foreach($resultcategorie as $categorieRow) {
+                        echo "<option value='".$categorieRow['categorie']."'>".$categorieRow['categorie']."</option>";
                     }
-                    echo "</select>
-                           <input type='submit' value='Opslaan' name='aanpassen'>
-                           <input type='submit' value='Verwijderen' name='verwijderen'>
-                       </form>
-                   </td>";
-               }
-            ?>
+
+                echo "</select>
+            </td>
+            <td>
+                <button id='aanpassenButton_".$row['idproduct']."' type='button' onclick='openFormProduct(".$row['idproduct'].")'>Aanpassen</button>
+                <input id='saveButton_".$row['idproduct']."' type='submit' value='Opslaan' name='aanpassen' style='display: none;'>
+                <input id='deleteButton_".$row['idproduct']."' type='submit' value='Verwijderen' name='verwijderen' style='display: none;'>
+            </td>
+        </form>
+    ";
+    echo "</tr>";
+}
+?>
         </table>
     </div>
 
