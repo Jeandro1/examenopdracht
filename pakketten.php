@@ -1,51 +1,18 @@
 <?php
 include('db.php');
 
-if(!isset($_SESSION['gebruikersnaam'])) {
+// Check if user is logged in
+if (!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
     exit();
 }
 
-if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger"){
+// Check user role
+if ($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger") {
     header("location:account.php");
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['submit'])) {
-        // Controleren of alle vereiste velden zijn ingevuld
-        if (isset($_POST['pakket_idpakket'], $_POST['product_idproduct'], $_POST['aantal'])) {
-            $pakket_idpakket = $_POST['pakket_idpakket'];
-            $product_idproduct = $_POST['product_idproduct'];
-            $aantal = $_POST['aantal'];
-            $selectedproducts = isset($_POST['product']) ? $_POST['product'] : [];
-
-            // Voorbereiden van de query om gegevens in te voegen
-            $stmt = $conn->prepare("INSERT INTO pakket_has_product (pakket_idpakket, product_idproduct, aantal, naam) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("iii", $pakket_idpakket, $product_idproduct, $aantal);
-            $stmt->execute();
-
-            // Loop over geselecteerde producten en voeg ze toe aan de relatie
-            foreach ($selectedproducts as $selectedproduct) {
-                $stmt = $conn->prepare("INSERT INTO pakket_has_product (product_idproduct, pakket_idpakket) VALUES (?, ?)");
-                $stmt->bind_param("ii", $selectedproduct, $pakket_idpakket);
-                $stmt->execute();
-            }
-        }
-    }
-
-    // Voeg nieuwe pakketten toe
-    if (isset($_POST['addpakket'])) {
-        if (isset($_POST['newpakket'])) {
-            $newpakket = $_POST['newpakket'];
-            $stmt = $conn->prepare("INSERT INTO pakket_has_product (pakket_idpakket) VALUES (?)");
-            $stmt->bind_param("i", $newpakket);
-            $stmt->execute();
-        } else {
-            echo "Nieuw pakket veld is niet ingevuld.";
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -59,35 +26,116 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="icon" type="image/png" href="images/icon.png">
     <link rel="stylesheet" href="styling2.css">
     <link rel="stylesheet" href="navbar.css">
+    <script>
+        function toevoegenAanOverzicht(idproduct) {
+            // Zoek de geselecteerde elementen
+            var ean = document.getElementById('EAN_' + idproduct).innerText;
+            var naam = document.getElementById('product_' + idproduct).innerText;
+            var aantal = document.getElementById('aantal_' + idproduct).innerText;
+            var categorie = document.getElementById('categorie_' + idproduct).innerText;
+
+            // Maak een nieuwe rij voor het overzicht
+            var newRow = "<tr id='rij_" + idproduct + "'>";
+            newRow += "<td>" + ean + "</td>";
+            newRow += "<td>" + naam + "</td>";
+            newRow += "<td>" + aantal + "</td>";
+            newRow += "<td>" + categorie + "</td>";
+            newRow += "<td><button onclick='verwijderUitOverzicht(" + idproduct + ")'>Verwijder</button></td>";
+            newRow += "</tr>";
+
+            // Voeg de nieuwe rij toe aan het overzicht
+            document.getElementById('overzichtTable').innerHTML += newRow;
+
+            // Toon de knop voor het verwijderen van producten
+            document.getElementById('verwijderButton').style.display = 'inline';
+        }
+
+        function verwijderUitOverzicht(idproduct) {
+            // Zoek de rij die verwijderd moet worden
+            var row = document.getElementById('rij_' + idproduct);
+            // Verwijder de rij uit de tabel
+            row.parentNode.removeChild(row);
+
+            // Verberg de knop voor het verwijderen van producten als er geen rijen meer zijn
+            if (document.getElementById('overzichtTable').getElementsByTagName('tr').length === 1) {
+                document.getElementById('verwijderButton').style.display = 'none';
+            }
+        }
+    </script>
 </head>
 
 <body>
-    <?php navbar(); ?>  
+    <?php navbar(); 
+    $columnName = isset($_GET['sort']) ? $_GET['sort'] : 'product';
+$order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-    <div class="aanmaakpagina">
-        <form class="formsborder" method="post" action="" enctype="multipart/form-data">
-            Naam: <br><input type="text" name="naam" required><br>
-            Aantal: <br><input type="number" name="aantal" required><br><br>
-            Producten:<br>
-            <?php
-            // Haal producten op uit de database
-            $result = $mysqli->query("SELECT * FROM product");
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<input type='checkbox' name='product[]' value='" . $row['idproduct'] . "'>" . $row['product'] . "<br>";
-                }
-            } else {
-                echo "Geen producten gevonden.";
-            }
-            ?>
-            <br><input class="formsbutton" type="submit" name="submit" value="Toevoegen">
-            <?php if (isset($_POST['submit'])) {echo "Product toegevoegd!"; } ?>
-        </form>
+$query = "SELECT * FROM product";
+$result = $mysqli->query($query);
+function sortTable($columnName, $order, $result)
+{
+    $data = array();
+    
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
 
-        <form class="formsborder" method="post" action="">
-            Nieuwe pakket: <input type="text" name="newpakket" required>
-            <input class="formsbutton" type="submit" name="addpakket" value="Toevoegen">
-        </form>
+    usort($data, function($a, $b) use ($columnName, $order) {
+        if ($order === 'asc') {
+            return $a[$columnName] <=> $b[$columnName];
+        } else {
+            return $b[$columnName] <=> $a[$columnName];
+        }
+    });
+
+    return $data;
+}
+$data = sortTable($columnName, $order, $result);
+?>
+                <div class="overzicht">
+                <table>
+                    <tr>
+                        <th><a href="?sort=EAN&order=<?= ($columnName === 'EAN' && $order === 'asc' ? 'desc' : 'asc') ?>">EAN</a></th>
+                        <th><a href="?sort=product&order=<?= ($columnName === 'product' && $order === 'asc' ? 'desc' : 'asc') ?>">Naam</a></th>
+                        <th><a href="?sort=aantal&order=<?= ($columnName === 'aantal' && $order === 'asc' ? 'desc' : 'asc') ?>">Aantal</a></th>
+                        <th><a href="?sort=categorie&order=<?= ($columnName === 'categorie' && $order === 'asc' ? 'desc' : 'asc') ?>">Categorie</a></th>
+                        <th><a>verzend</a></th>
+                    </tr>
+                    <?php
+                       foreach ($data as $row) {
+                            echo "<tr>";
+                            echo "
+                                <td><span id='EAN_" . $row['idproduct'] . "'>" . $row['EAN'] . "</span></td>
+                                <td><span id='product_" . $row['idproduct'] . "'>" . $row['product'] . "</span></td>
+                                <td><span id='aantal_" . $row['idproduct'] . "'>" . $row['aantal'] . "</span></td>
+                                <td><span id='categorie_" . $row['idproduct'] . "'>" . $row['categorie'] . "</span></td>
+                                <td><button onclick='toevoegenAanOverzicht(" . $row['idproduct'] . ")'>verzend</button></td>
+                            ";
+                            echo "</tr>";
+                        }
+                    ?>
+                </table>
+            </div>
+<div class="productoverzicht">
+        <table id="overzichtTable">
+            <tr>
+                <th>EAN</th>
+                <th>Naam</th>
+                <th>Aantal</th>
+                <th>Categorie</th>
+                <th>Verwijder</th>
+            </tr>
+        </table>
+        <ul>
+  
+        </ul>
+
+    </div>
+
+
+   
+
+ 
+       
     </div>
 
     <footer>

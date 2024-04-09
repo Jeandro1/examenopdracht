@@ -2,13 +2,27 @@
 
 session_start();
 
-$hostname = "localhost";
+$servername = "localhost";
 $username = "root";
 $password = "";
-$database = "maaskantje";
+$dbname = "maaskantje";
 
-$mysqli = new mysqli($hostname, $username, $password, $database);
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+
+// Create connection
+$mysqli = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
 function navbar(){
     echo "<div class='navbar2'>
             <a href='index.php'>
