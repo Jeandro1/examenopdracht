@@ -1,12 +1,14 @@
 <?php
 include('db.php');
 
-//if(!isset($_SESSION['gebruikersnaam'])) {
-//    header("location:login.php");
-//}
+if(!isset($_SESSION['gebruikersnaam'])) {
+    header("location:login.php");
+    exit();
+}
 
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
+if($_SESSION['functie'] != "directie"){
+    header("location:account.php");
+    exit();
 }
 
 // medewerker toevoegen
@@ -20,41 +22,38 @@ if (isset($_POST['toevoegen'])) {
 
     if($wachtwoord !== $herhaalwachtwoord){
         header("location:medewerkers.php");
-        $message = "Wachtwoorden komen niet overeen!";
+        echo "<script>alert('Wachtwoorden komen niet overeen!');</script>";
         exit();
     }
     else {
+        $check_query = "SELECT * FROM medewerker WHERE gebruikersnaam = ?";
+        $check_stmt = $mysqli->prepare($check_query);
+        $check_stmt->bind_param("s", $gebruikersnaam);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
 
-    }
+        if ($check_result->num_rows > 0) {
+            echo "<script>alert('Gebruikersnaam is al in gebruik.');</script>";
+        } else {
 
-    $check_query = "SELECT * FROM medewerker WHERE gebruikersnaam = ?";
-    $check_stmt = $mysqli->prepare($check_query);
-    $check_stmt->bind_param("s", $gebruikersnaam);
-    $check_stmt->execute();
-    $check_result = $check_stmt->get_result();
+            $hashedwachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
+            $insert_query = "INSERT INTO medewerker (voornaam, achternaam, gebruikersnaam, wachtwoord, functie) VALUES (?, ?, ?, ?, ?)";
+            $insert_stmt = $mysqli->prepare($insert_query);
 
-    if ($check_result->num_rows > 0) {
-        echo "<script>alert('Gebruikersnaam is al in gebruik.');</script>";
-    } else {
+            if (!$insert_stmt) {
+                die("Error in SQL query: " . $mysqli->error);
+            }
 
-        $hashedwachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
+            if (!$insert_stmt->bind_param("sssss", $voornaam, $achternaam, $gebruikersnaam, $hashedwachtwoord, $functie)) {
+                die("Error binding parameters: " . $insert_stmt->error);
+            }
 
-        $insert_query = "INSERT INTO medewerker (voornaam, achternaam, gebruikersnaam, wachtwoord, functie) VALUES (?, ?, ?, ?, ?)";
-        $insert_stmt = $mysqli->prepare($insert_query);
+            if (!$insert_stmt->execute()) {
+                die("Error executing query: " . $insert_stmt->error);
+            }
 
-        if (!$insert_stmt) {
-            die("Error in SQL query: " . $mysqli->error);
+            $insert_stmt->close();
         }
-
-        if (!$insert_stmt->bind_param("sssss", $voornaam, $achternaam, $gebruikersnaam, $hashedwachtwoord, $functie)) {
-            die("Error binding parameters: " . $insert_stmt->error);
-        }
-
-        if (!$insert_stmt->execute()) {
-            die("Error executing query: " . $insert_stmt->error);
-        }
-
-        $insert_stmt->close();
     }
 }
 
@@ -63,13 +62,11 @@ if(isset($_POST['aanpassen'])) {
     $voornaam = $_POST['voornaam'];
     $achternaam = $_POST['achternaam'];
     $gebruikersnaam = $_POST['gebruikersnaam'];
-    $wachtwoord = $_POST['wachtwoord'];
-    $herhaalwachtwoord = $_POST['herhaalwachtwoord'];
     $functie = $_POST['functie'];
 
-    $update_query = "UPDATE medewerker SET voornaam=?, achternaam=?, gebruikersnaam=?, wachtwoord=?, functie=? WHERE idmedewerker=?";
+    $update_query = "UPDATE medewerker SET voornaam=?, achternaam=?, gebruikersnaam=?, functie=? WHERE idmedewerker=?";
     $update_stmt = $mysqli->prepare($update_query);
-    $update_stmt->bind_param("sssssi", $voornaam, $achternaam, $gebruikersnaam, $wachtwoord, $functie, $idmedewerker);
+    $update_stmt->bind_param("ssssi", $voornaam, $achternaam, $gebruikersnaam, $functie, $idmedewerker);
     $update_stmt->execute();
 
     $update_stmt->close();
@@ -136,41 +133,7 @@ $data = sortTable($columnName, $order, $result);
 </head>
 
 <body>
-    <div class="navbar2">
-        <a href="index.php">
-            <img class="navicon" src="images/icon.png" href="index.php">
-        </a>
-        <div class="navitems">
-            <?php 
-            if($_SESSION['gebruikersnaam']['functie'] == "directie"){
-                echo '<a href="medewerkers.php">
-                        <p class="knop">Medewerkers</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "magazijn"){
-                echo '<a href="leveranciers.php">
-                        <p class="knop">Leveranciers</p>
-                    </a>
-                      <a href="voorraad.php">
-                        <p class="knop">Voorraad</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "vrijwilliger"){
-                echo '<a href="klanten.php">
-                    <p class="knop">Klanten</p>
-                     </a>
-                   <a href="pakketten.php">
-                     <p class="knop">Pakketten</p>
-                   </a>';
-            }
-            if(!empty($_SESSION['gebruikersnaam']['functie'])){
-                echo '<a href="account.php">
-                <p class="knop">Account</p>
-            </a>';
-            }
-            ?>
-        </div>
-    </div>
+    <?php navbar(); ?>  
 
     <div class="gebruikersinvoegen">
         <form action="" method="post">
@@ -192,38 +155,10 @@ $data = sortTable($columnName, $order, $result);
                     <td><select name="functie">          
                     <option value="vrijwilliger">Vrijwilliger</option>          
                     <option value="magazijn">Magazijn</option>        
-                    <option value="directie">Directie</option>        
+                    <option value="directie">Directie</option>
+                    <option value="geblokkeerd">Geblokkeerd</option>          
                     </select></td>
                 <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
-            </table>
-        </form>
-    </div>
-
-    <div class="gebruikersinvoegen">
-        <form action="" method="post">
-            <table>
-                <tr>
-                    <th>idMedewerker</th>
-                    <th>Voornaam</th>
-                    <th>Achternaam</th>
-                    <th>Gebruikersnaam</th>
-                    <th>Wachtwoord</th>
-                    <th>Functie</th>
-                    <th>Aanpassen</th>
-                </tr>
-                <tr>
-                    <td><input type="text" name="idmedewerker"></td>
-                    <td><input type="text" name="voornaam"></td>
-                    <td><input type="text" name="achternaam"></td>
-                    <td><input type="text" name="gebruikersnaam"></td>
-                    <td><input type="text" name="wachtwoord"></td>
-                    <td><select name="functie">          
-                    <option value="vrijwilliger">Vrijwilliger</option>          
-                    <option value="magazijn">Magazijn</option>        
-                    <option value="directie">Directie</option>        
-                    </select></td>
-                    <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
-                </tr>
             </table>
         </form>
     </div>
@@ -231,7 +166,6 @@ $data = sortTable($columnName, $order, $result);
     <div class="overzicht">
         <table>
             <tr>
-                <th><a href="?sort=idmedewerker&order=<?= ($columnName === 'idmedewerker' && $order === 'asc' ? 'desc' : 'asc') ?>">idmedewerker</a></th>
                 <th><a href="?sort=voornaam&order=<?= ($columnName === 'voornaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Voornaam</a></th>
                 <th><a href="?sort=achternaam&order=<?= ($columnName === 'achternaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Achternaam</a></th>
                 <th><a href="?sort=gebruikersnaam&order=<?= ($columnName === 'gebruikersnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Gebruikersnaam</a></th>
@@ -246,17 +180,26 @@ $data = sortTable($columnName, $order, $result);
             <?php
             foreach ($data as $row) {
                 echo "<tr>";
-                echo "<td>".$row['idmedewerker']."</td>";
                 echo "<td>".$row['voornaam']."</td>";
                 echo "<td>".$row['achternaam']."</td>";
                 echo "<td>".$row['gebruikersnaam']."</td>";
                 echo "<td>".$row['functie']."</td>";
                 echo "<td>
-                        <form action='' method='post'>
-                            <input type='hidden' name='idmedewerker' value='".$row['idmedewerker']."'>
-                            <input type='submit' value='Verwijderen' name='verwijderen'>
-                        </form>
-                      </td>";
+                <form action='' method='post'>
+                    <input type='hidden' name='idmedewerker' value='". $row['idmedewerker']. "'>
+                    <input type='text' name='voornaam' value='". $row['voornaam'] . "'>
+                    <input type='text' name='achternaam' value='". $row['achternaam'] . "'>
+                    <input type='text' name='gebruikersnaam' value='". $row['gebruikersnaam'] . "'>
+                    <select name='functie'>          
+                    <option value='vrijwilliger'>Vrijwilliger</option>          
+                    <option value='magazijn'>Magazijn</option>        
+                    <option value='directie'>Directie</option>
+                    <option value='geblokkeerd'>Geblokkeerd</option>          
+                    </select>
+                    <input type='submit' value='Opslaan' name='aanpassen'>
+                    <input type='submit' value='Verwijderen' name='verwijderen'>
+                  </form>
+               </td>";
                 echo "</tr>";
             }
             ?>

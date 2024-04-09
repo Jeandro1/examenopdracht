@@ -1,22 +1,14 @@
 <?php
-
 include('db.php');
 
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
+    exit();
 }
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "maaskantje";
-
-// Verbinding maken met de database
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Controleren op fouten bij de verbinding
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger"){
+    header("location:account.php");
+    exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -70,41 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-    <div class="navbar2">
-        <a href="index.php">
-            <img class="navicon" src="images/icon.png" href="index.php">
-        </a>
-        <div class="navitems">
-            <?php 
-            if($_SESSION['gebruikersnaam']['functie'] == "directie"){
-                echo '<a href="medewerkers.php">
-                        <p class="knop">Medewerkers</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "magazijn"){
-                echo '<a href="leveranciers.php">
-                        <p class="knop">Leveranciers</p>
-                    </a>
-                      <a href="voorraad.php">
-                        <p class="knop">Voorraad</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "vrijwilliger"){
-                echo '<a href="klanten.php">
-                    <p class="knop">Klanten</p>
-                     </a>
-                   <a href="pakketten.php">
-                     <p class="knop">Pakketten</p>
-                   </a>';
-            }
-            if(!empty($_SESSION['gebruikersnaam']['functie'])){
-                echo '<a href="account.php">
-                <p class="knop">Account</p>
-            </a>';
-            }
-            ?>
-        </div>
-    </div>
+    <?php navbar(); ?>  
 
     <div class="aanmaakpagina">
         <form class="formsborder" method="post" action="" enctype="multipart/form-data">
@@ -113,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             Producten:<br>
             <?php
             // Haal producten op uit de database
-            $result = $conn->query("SELECT * FROM product");
+            $result = $mysqli->query("SELECT * FROM product");
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "<input type='checkbox' name='product[]' value='" . $row['idproduct'] . "'>" . $row['product'] . "<br>";

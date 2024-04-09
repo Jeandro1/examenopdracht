@@ -3,6 +3,12 @@ include('db.php');
 
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
+    exit();
+}
+
+if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger"){
+    header("location:account.php");
+    exit();
 }
 
 ?>
@@ -21,41 +27,7 @@ if(!isset($_SESSION['gebruikersnaam'])) {
 </head>
 
 <body>
-    <div class="navbar2">
-        <a href="index.php">
-            <img class="navicon" src="images/icon.png" href="index.php">
-        </a>
-        <div class="navitems">
-            <?php 
-            if($_SESSION['gebruikersnaam']['functie'] == "directie"){
-                echo '<a href="medewerkers.php">
-                        <p class="knop">Medewerkers</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "magazijn"){
-                echo '<a href="leveranciers.php">
-                        <p class="knop">Leveranciers</p>
-                    </a>
-                      <a href="voorraad.php">
-                        <p class="knop">Voorraad</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "vrijwilliger"){
-                echo '<a href="klanten.php">
-                    <p class="knop">Klanten</p>
-                     </a>
-                   <a href="pakketten.php">
-                     <p class="knop">Pakketten</p>
-                   </a>';
-            }
-            if(!empty($_SESSION['gebruikersnaam']['functie'])){
-                echo '<a href="account.php">
-                <p class="knop">Account</p>
-            </a>';
-            }
-            ?>
-        </div>
-    </div>
+    <?php navbar(); ?>  
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 

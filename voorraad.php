@@ -3,10 +3,12 @@ include('db.php');
 
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
+    exit();
 }
 
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
+if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "magazijn"){
+    header("location:account.php");
+    exit();
 }
 
 // Product toevoegen
@@ -22,7 +24,7 @@ if (isset($_POST['toevoegen'])) {
     $check_result = $check_stmt->get_result();
 
     if ($check_result->num_rows > 0) {
-        echo "<script>alert('Dit product bestaat al.');</script>";
+        echo "<script>alert('Dit product bestaat al!');</script>";
     } else {
         $EAN = generateUniqueEAN($mysqli);
 
@@ -56,7 +58,7 @@ if (isset($_POST['categorietoevoegen'])) {
     $check_result = $check_stmt->get_result();
 
     if ($check_result->num_rows > 0) {
-        echo "<script>alert('Deze categorie bestaat al.');</script>";
+        echo "<script>alert('Deze categorie bestaat al!');</script>";
     } else {
         
         $insert_query = "INSERT INTO categorie (categorie) VALUES (?)";
@@ -176,8 +178,7 @@ if (!empty($search)) {
 $columnName = isset($_GET['sort']) ? $_GET['sort'] : 'product';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT product.idproduct, product.EAN, product.product, product.aantal, categorie.categorie FROM product
-INNER JOIN categorie ON product.categorie = categorie.idcategorie";
+$query = "SELECT * FROM product";
 $result = $mysqli->query($query);
 
 $data = sortTable($columnName, $order, $result);
@@ -201,41 +202,7 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
 </head>
 
 <body>
-    <div class="navbar2">
-        <a href="index.php">
-            <img class="navicon" src="images/icon.png" href="index.php">
-        </a>
-        <div class="navitems">
-            <?php 
-            if($_SESSION['gebruikersnaam']['functie'] == "directie"){
-                echo '<a href="medewerkers.php">
-                        <p class="knop">Medewerkers</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "magazijn"){
-                echo '<a href="leveranciers.php">
-                        <p class="knop">Leveranciers</p>
-                    </a>
-                      <a href="voorraad.php">
-                        <p class="knop">Voorraad</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "vrijwilliger"){
-                echo '<a href="klanten.php">
-                    <p class="knop">Klanten</p>
-                     </a>
-                   <a href="pakketten.php">
-                     <p class="knop">Pakketten</p>
-                   </a>';
-            }
-            if(!empty($_SESSION['gebruikersnaam']['functie'])){
-                echo '<a href="account.php">
-                <p class="knop">Account</p>
-            </a>';
-            }
-            ?>
-        </div>
-    </div>
+    <?php navbar(); ?>  
 
     <div class="toevoegen">
         <form action="" method="post">
@@ -249,39 +216,14 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
                 <tr>
                     <td><input type="text" name="product"></td>
                     <td><input type="number" name="aantal" min="1"></td>
-                    <td><select name="idcategorie">
+                    <td><select name="categorie">
                         <?php
                         foreach($resultcategorie as $row){
-                            echo "<option value='" . $row['idcategorie'] . "'>" . $row['categorie'] . "</option>";
+                            echo "<option value='" . $row['categorie'] . "'>" . $row['categorie'] . "</option>";
                         }
                         ?>  
                     </select></td>
                     <td><input type="submit" value="Toevoegen" name="toevoegen"></td>
-                </tr>
-            </table>
-        </form>
-    </div>
-
-    <div class="gebruikersinvoegen">
-        <form action="" method="post">
-            <table>
-                <tr>
-                    <th>Naam</th>
-                    <th>Aantal</th>
-                    <th>Categorie</th>
-                    <th>Product Aanpassen</th>
-                </tr>
-                <tr>
-                    <td><input type="text" name="product"></td>
-                    <td><input type="number" name="aantal" min="1"></td>
-                    <td><select name="idcategorie">
-                        <?php
-                        foreach($resultcategorie as $row){
-                            echo "<option value='" . $row['idcategorie'] . "'>" . $row['categorie'] . "</option>";
-                        }
-                        ?>  
-                    </select></td>
-                    <td><input type="submit" value="Aanpassen" name="aanpassen"></td>
                 </tr>
             </table>
         </form>
@@ -331,24 +273,27 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
                 </th>
             </tr>
             <?php
-            foreach ($data as $row) {
-                echo "<tr>";
-                echo "<td>".$row['EAN']."</td>";
-                echo "<td>".$row['product']."</td>";
-                echo "<td>".$row['aantal']."</td>";
-                echo "<td>".$row['categorie']."</td>";
-                echo "<td>
-                        <form action='' method='post'>
-                            <input type='hidden' name='idproduct' value='".$row['idproduct']."'>
-                            <input type='text' name='nieuw_product' min='1' value='".$row['product']."'>
-                            <input type='number' name='nieuw_aantal' min='1' value='".$row['aantal']."'>
-                            <input type='number' name='nieuw_categorie' min='1' value='".$row['categorie']."'>
-                            <input type='submit' value='Aanpassen' name='aanpassen'>
-                            <input type='submit' value='Verwijderen' name='verwijderen'>
-                        </form>
-                      </td>";
-                echo "</tr>";
-            }
+               foreach ($data as $row) {
+                   echo "<tr>";
+                   echo "<td>".$row['EAN']."</td>";
+                   echo "<td>".$row['product']."</td>";
+                   echo "<td>".$row['aantal']."</td>";
+                   echo "<td>".$row['categorie']."</td>";
+                   echo "<td>
+                       <form action='' method='post'>
+                           <input type='hidden' name='idproduct' value='". $row['idproduct']. "'>
+                           <input type='text' name='product' value='". $row['product'] . "'>
+                           <input type='number' name='aantal' value='". $row['aantal'] . "'>
+                           <select name='categorie'>";
+                    foreach($resultcategorie as $categorieRow){
+                        echo "<option value='" . $categorieRow['categorie'] . "'>" . $categorieRow['categorie'] . "</option>";
+                    }
+                    echo "</select>
+                           <input type='submit' value='Opslaan' name='aanpassen'>
+                           <input type='submit' value='Verwijderen' name='verwijderen'>
+                       </form>
+                   </td>";
+               }
             ?>
         </table>
     </div>

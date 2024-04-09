@@ -3,6 +3,48 @@ include('db.php');
 
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
+    exit();
+}
+
+if (isset($_POST['aanpassen'])) {
+    $username = $_SESSION['gebruikersnaam'];
+    $wachtwoord = $_POST['wachtwoord'];
+    $nieuwwachtwoord = $_POST['nieuwwachtwoord'];
+    $herhaalwachtwoord = $_POST['herhaalwachtwoord'];
+    $idmedewerker = $_SESSION['idmedewerker'];
+
+    if($nieuwwachtwoord !== $herhaalwachtwoord){
+        echo "<script>alert('Wachtwoorden komen niet overeen!');</script>";
+    }
+    else {
+        $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ?";
+        $stmt = $mysqli->prepare($query);
+
+        if (!$stmt->bind_param("s", $username)) {
+            die("Error binding parameters: " . $stmt->error);
+        }
+
+        if (!$stmt->execute()) {
+            die("Error executing query: " . $stmt->error);
+        }
+
+        $result = $stmt->get_result();
+
+        if ($row = $result->fetch_assoc()) {
+            if(password_verify($wachtwoord, $row['wachtwoord'])) {
+                $hashedwachtwoord = password_hash($nieuwwachtwoord, PASSWORD_DEFAULT);
+                $update_query = "UPDATE medewerker SET wachtwoord=? WHERE idmedewerker=?";
+                $update_stmt = $mysqli->prepare($update_query);
+                $update_stmt->bind_param("si", $hashedwachtwoord, $idmedewerker);
+                $update_stmt->execute();
+                $update_stmt->close();
+                echo "<script>alert('Wachtwoord is succesvol gewijzigd!');</script>";
+            }
+            else{
+                echo "<script>alert('Oud wachtwoord incorrect!');</script>";
+            }
+        }  
+    }
 }
 
 ?>
@@ -21,66 +63,26 @@ if(!isset($_SESSION['gebruikersnaam'])) {
 </head>
 
 <body>
-    <div class="navbar2">
-        <a href="index.php">
-            <img class="navicon" src="images/icon.png" href="index.php">
-        </a>
-        <div class="navitems">
-            <?php 
-            if($_SESSION['gebruikersnaam']['functie'] == "directie"){
-                echo '<a href="medewerkers.php">
-                        <p class="knop">Medewerkers</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "magazijn"){
-                echo '<a href="leveranciers.php">
-                        <p class="knop">Leveranciers</p>
-                    </a>
-                      <a href="voorraad.php">
-                        <p class="knop">Voorraad</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "vrijwilliger"){
-                echo '<a href="klanten.php">
-                    <p class="knop">Klanten</p>
-                     </a>
-                   <a href="pakketten.php">
-                     <p class="knop">Pakketten</p>
-                   </a>';
-            }
-            if(!empty($_SESSION['gebruikersnaam']['functie'])){
-                echo '<a href="account.php">
-                <p class="knop">Account</p>
-            </a>';
-            }
-            ?>
-        </div>
-    </div>
+    <?php navbar(); ?>  
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
     <div class="gebruikersinvoegen">
             <table>
                 <tr>
-                    <th>idMedewerker</th>
                     <th>Voornaam</th>
                     <th>Achternaam</th>
                     <th>Gebruikersnaam</th>
-                    <th>Wachtwoord</th>
                     <th>Functie</th>
                 </tr>
 
     <?php
-            if(isset($_SESSION['gebruikersnaam'])) {
-                echo "<tr>";
-                echo "<td>".$_SESSION['gebruikersnaam']['idmedewerker']."</td>";
-                echo "<td>".$_SESSION['gebruikersnaam']['voornaam']."</td>";
-                echo "<td>".$_SESSION['gebruikersnaam']['achternaam']."</td>";
-                echo "<td>".$_SESSION['gebruikersnaam']['gebruikersnaam']."</td>";
-                echo "<td>".$_SESSION['gebruikersnaam']['wachtwoord']."</td>";
-                echo "<td>".$_SESSION['gebruikersnaam']['functie']."</td>";
-                echo "</tr>";
-            }
+        echo "<tr>";
+        echo "<td>".$_SESSION['voornaam']."</td>";
+        echo "<td>".$_SESSION['achternaam']."</td>";
+        echo "<td>".$_SESSION['gebruikersnaam']."</td>";
+        echo "<td>".$_SESSION['functie']."</td>";
+        echo "</tr>";
     ?>
 </table>
 
@@ -97,11 +99,11 @@ if(!isset($_SESSION['gebruikersnaam'])) {
                 </tr>
                 <tr>
                     <td>Nieuw wachtwoord:</td>
-                    <td><input type="text" name="wachtwoord"></td>
+                    <td><input type="text" name="nieuwwachtwoord"></td>
                 </tr>
                 <tr>
                     <td>Herhaal nieuw wachtwoord:</td>
-                    <td><input type="text" name="wachtwoord"></td>
+                    <td><input type="text" name="herhaalwachtwoord"></td>
                 </tr>
             </table>
         </form>
@@ -113,9 +115,10 @@ if(!isset($_SESSION['gebruikersnaam'])) {
         if(isset($_POST["loguitknop"])){
             session_destroy();
             header("location:login.php");
+            exit();
         }
         ?>
-        <div class="formitem"><input class="groeneknop" type="submit" name="loguitknop" value="Log uit"></div>
+        <div class="formitem"><input type="submit" name="loguitknop" value="Log uit"></div>
     </form>
 </div>
 

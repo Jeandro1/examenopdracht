@@ -3,49 +3,11 @@ include('db.php');
 
 if(isset($_SESSION['gebruikersnaam'])) {
     header("location:account.php");
+    exit();
 }
 
 $message = "";
 
-if (isset($_POST['loginknop'])) {
-    $username = $_POST["user"];
-    $password = $_POST["pwd"];
-
-    $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ? OR wachtwoord = ?";
-    $stmt = $mysqli->prepare($query);
-
-    if (!$stmt->bind_param("ss", $username, $password)) {
-        die("Error binding parameters: " . $stmt->error);
-    }
-
-    if (!$stmt->execute()) {
-        die("Error executing query: " . $stmt->error);
-    }
-
-    $result = $stmt->get_result();
-
-    if ($row = mysqli_fetch_assoc($result)) {
-        $pwdCheck = password_verify($password, $row['wachtwoord']);
-        if($pwdCheck == true) {
-            $_SESSION["gebruikersnaam"] = array(
-                "idmedewerker" => $row["idmedewerker"],
-                "voornaam" => $row["voornaam"],
-                "achternaam" => $row["achternaam"],
-                "gebruikersnaam" => $row["gebruikersnaam"],
-                "wachtwoord" => $row["wachtwoord"],
-                "functie" => $row["functie"]
-            );
-            header("Location: account.php");
-            exit();
-        } else {
-            $message = "Incorrecte gebruikersnaam of wachtwoord";
-        }
-    } else {
-        $message = "Gebruiker niet gevonden";
-    }
-}
-
-$mysqli->close();
 ?>
 
 <!DOCTYPE html>
@@ -78,11 +40,46 @@ $mysqli->close();
     <div class="forms">
         <form action="" method="post">
             <?php
-                if(isset($_POST["loginknop"])){
-                    if(empty($_POST["login"]) || empty($_POST["pwd"])){
-                        echo "Alle velden moeten worden ingevuld!";
-                    }  
+                if (isset($_POST['loginknop'])) {
+                    if(empty($_POST["user"]) || empty($_POST["pwd"])){
+                        $message = "Alle velden moeten worden ingevuld!";
+                    } else {
+                        $username = $_POST["user"];
+                        $password = $_POST["pwd"];
+
+                        $query = "SELECT * FROM medewerker WHERE gebruikersnaam = ?";
+                        $stmt = $mysqli->prepare($query);
+
+                        if (!$stmt->bind_param("s", $username)) {
+                            die("Error binding parameters: " . $stmt->error);
+                        }
+
+                        if (!$stmt->execute()) {
+                            die("Error executing query: " . $stmt->error);
+                        }
+
+                        $result = $stmt->get_result();
+
+                        if ($row = $result->fetch_assoc()) {
+                            if(password_verify($password, $row['wachtwoord'])) {
+                                $_SESSION["idmedewerker"] = $row["idmedewerker"];
+                                $_SESSION["voornaam"] = $row["voornaam"];
+                                $_SESSION["achternaam"] = $row["achternaam"];
+                                $_SESSION["gebruikersnaam"] = $row["gebruikersnaam"];
+                                $_SESSION["functie"] = $row["functie"];
+                                $message = "Login succesvol!";
+                                header("Location: account.php");
+                                exit();
+                            } else {
+                                $message = "Incorrecte gebruikersnaam of wachtwoord!";
+                            }
+                        } else {
+                            $message = "Gebruiker niet gevonden!";
+                        }
+                    }
                 }
+
+                echo $message;
             ?>
             <div class="formitem">gebruikersnaam<input type="text" name="user" value=""></div>
             <div class="formitem">Wachtwoord<input type="password" name="pwd" value=""></div>

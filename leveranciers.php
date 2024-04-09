@@ -3,10 +3,12 @@ include('db.php');
 
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
+    exit();
 }
 
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
+if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "magazijn"){
+    header("location:account.php");
+    exit();
 }
 
 // gegevens toevoegen
@@ -25,7 +27,7 @@ if (isset($_POST['toevoegen'])) {
     $check_result = $check_stmt->get_result();
 
     if ($check_result->num_rows > 0) {
-        echo "<script>alert('Deze levering bestaat al.');</script>";
+        echo "<script>alert('Deze levering bestaat al!');</script>";
     } else {
     
 
@@ -103,7 +105,7 @@ if (!empty($search)) {
     $search_condition = "WHERE leverancier LIKE '%$search%'";
 }
 
-$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idleverancier';
+$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'bedrijfsnaam';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
 $query = "SELECT * FROM leverancier";
@@ -127,41 +129,7 @@ $data = sortTable($columnName, $order, $result);
 </head>
 
 <body>
-    <div class="navbar2">
-        <a href="index.php">
-            <img class="navicon" src="images/icon.png" href="index.php">
-        </a>
-        <div class="navitems">
-            <?php 
-            if($_SESSION['gebruikersnaam']['functie'] == "directie"){
-                echo '<a href="medewerkers.php">
-                        <p class="knop">Medewerkers</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "magazijn"){
-                echo '<a href="leveranciers.php">
-                        <p class="knop">Leveranciers</p>
-                    </a>
-                      <a href="voorraad.php">
-                        <p class="knop">Voorraad</p>
-                    </a>';
-            }
-            if($_SESSION['gebruikersnaam']['functie'] == "directie" || $_SESSION['gebruikersnaam']['functie'] == "vrijwilliger"){
-                echo '<a href="klanten.php">
-                    <p class="knop">Klanten</p>
-                     </a>
-                   <a href="pakketten.php">
-                     <p class="knop">Pakketten</p>
-                   </a>';
-            }
-            if(!empty($_SESSION['gebruikersnaam']['functie'])){
-                echo '<a href="account.php">
-                <p class="knop">Account</p>
-            </a>';
-            }
-            ?>
-        </div>
-    </div>
+    <?php navbar(); ?>  
 
     <div class="gebruikersinvoegen">
         <form action="" method="post">
@@ -191,7 +159,6 @@ $data = sortTable($columnName, $order, $result);
     <div class="overzicht">
         <table>
             <tr>
-                <th><a href="?sort=idleverancier&order=<?= ($columnName === 'idleverancier' && $order === 'asc' ? 'desc' : 'asc') ?>">idLeverancier</a></th>
                 <th><a href="?sort=bedrijfsnaam&order=<?= ($columnName === 'bedrijfsnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Bedrijfsnaam</a></th>
                 <th><a href="?sort=adres&order=<?= ($columnName === 'adres' && $order === 'asc' ? 'desc' : 'asc') ?>">Adres</a></th>
                 <th><a href="?sort=naam&order=<?= ($columnName === 'naam' && $order === 'asc' ? 'desc' : 'asc') ?>">Naam</a></th>
@@ -203,26 +170,16 @@ $data = sortTable($columnName, $order, $result);
                         <input type="text" name="search" placeholder="Zoeken...">
                         <input type="submit" value="Zoeken">
                     </form>
-                </th>
-                <th>Aanpassen</th>
             </tr>
             <?php
             foreach ($data as $row) {
                 echo "<tr>";
-                echo "<td>".$row['idleverancier']."</td>";
                 echo "<td>".$row['bedrijfsnaam']."</td>";
                 echo "<td>".$row['adres']."</td>";
                 echo "<td>".$row['naam']."</td>";
                 echo "<td>".$row['email']."</td>";
                 echo "<td>".$row['telefoonnummer']."</td>";
                 echo "<td>".$row['volgende_levering']."</td>";
-                echo "<td>
-                        <form action='' method='post'>
-                            <input type='hidden' name='idleverancier' value='".$row['idleverancier']."'>
-                            <input type='datetime-local' name='nieuw_volgende_levering' value='".$row['volgende_levering']."'>
-                            <input type='submit' value='Verwijderen' name='verwijderen'>
-                        </form>
-                      </td>";
                 echo "<td>
                 <form action='' method='post'>
                     <input type='hidden' name='idleverancier' value='". $row['idleverancier']. "'>
@@ -233,6 +190,7 @@ $data = sortTable($columnName, $order, $result);
                     <input type='text' name='telefoonnummer' value='" . $row['telefoonnummer'] . "'>
                     <input type='datetime-local' name='volgende_levering' value='". $row['volgende_levering'] . "'>
                     <input type='submit' value='Opslaan' name='aanpassen'>
+                    <input type='submit' value='Verwijderen' name='verwijderen'>
                   </form>
                </td>";
             }
