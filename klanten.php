@@ -13,7 +13,6 @@ if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger")
 
 // medewerker toevoegen
 if (isset($_POST['toevoegen'])) {
-    $idgezin = $_POST['idgezin'];
     $gezinsnaam = $_POST['gezinsnaam'];
     $adres = $_POST['adres'];
     $email = $_POST['email'];
@@ -44,7 +43,7 @@ if (isset($_POST['toevoegen'])) {
 
     $check_query = "SELECT * FROM gezin WHERE adres = ?";
     $check_stmt = $mysqli->prepare($check_query);
-    $check_stmt->bind_param("s", $gebruikersnaam);
+    $check_stmt->bind_param("s", $adres);
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
 
@@ -141,13 +140,13 @@ function sortTable($columnName, $order, $result)
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $search_condition = '';
 if (!empty($search)) {
-    $search_condition = "WHERE voornaam LIKE '%$search%'";
+    $search_condition = "WHERE gezinsnaam LIKE '%$search%' OR adres LIKE '%$search%' OR email LIKE '%$search%' OR telefoonnummer LIKE '%$search%'";
 }
 
 $columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idgezin';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT * FROM gezin";
+$query = "SELECT * FROM gezin $search_condition";
 $result = $mysqli->query($query);
 
 $data = sortTable($columnName, $order, $result);
@@ -207,16 +206,16 @@ $data = sortTable($columnName, $order, $result);
     <div class="overzicht">
         <table>
             <tr>
-                <th><a href="?sort=gezinsnaam&order=<?= ($columnName === 'voornaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Gezinsnaam</a></th>
-                <th><a href="?sort=adres&order=<?= ($columnName === 'achternaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Adres</a></th>
-                <th><a href="?sort=email&order=<?= ($columnName === 'gebruikersnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Email</a></th>
-                <th><a href="?sort=telefoonnummer&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Telefoonnummer</a></th>
-                <th><a href="?sort=volwassenen&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Volwassenen</a></th>
-                <th><a href="?sort=kinderen&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Kinderen</a></th>
-                <th><a href="?sort=babys&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Baby's</a></th>
-                <th><a href="?sort=varkensvlees&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Geen varkensvlees</a></th>
-                <th><a href="?sort=veganistisch&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Veganistisch</a></th>
-                <th><a href="?sort=vegetarisch&order=<?= ($columnName === 'functie' && $order === 'asc' ? 'desc' : 'asc') ?>">Vegetarisch</a></th>
+                <th><a href="?sort=gezinsnaam&order=<?= ($columnName === 'gezinsnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Gezinsnaam</a></th>
+                <th><a href="?sort=adres&order=<?= ($columnName === 'adres' && $order === 'asc' ? 'desc' : 'asc') ?>">Adres</a></th>
+                <th><a href="?sort=email&order=<?= ($columnName === 'email' && $order === 'asc' ? 'desc' : 'asc') ?>">Email</a></th>
+                <th><a href="?sort=telefoonnummer&order=<?= ($columnName === 'telefoonnummer' && $order === 'asc' ? 'desc' : 'asc') ?>">Telefoonnummer</a></th>
+                <th><a href="?sort=volwassenen&order=<?= ($columnName === 'volwassenen' && $order === 'asc' ? 'desc' : 'asc') ?>">Volwassenen</a></th>
+                <th><a href="?sort=kinderen&order=<?= ($columnName === 'kinderen' && $order === 'asc' ? 'desc' : 'asc') ?>">Kinderen</a></th>
+                <th><a href="?sort=babys&order=<?= ($columnName === 'babys' && $order === 'asc' ? 'desc' : 'asc') ?>">Baby's</a></th>
+                <th><a href="?sort=varkensvlees&order=<?= ($columnName === 'varkensvlees' && $order === 'asc' ? 'desc' : 'asc') ?>">Geen varkensvlees</a></th>
+                <th><a href="?sort=veganistisch&order=<?= ($columnName === 'veganistisch' && $order === 'asc' ? 'desc' : 'asc') ?>">Veganistisch</a></th>
+                <th><a href="?sort=vegetarisch&order=<?= ($columnName === 'vegetarisch' && $order === 'asc' ? 'desc' : 'asc') ?>">Vegetarisch</a></th>
                 <th>Allergieën</th>
                 <th>
                     <form action="" method="get">

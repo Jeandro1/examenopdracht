@@ -106,13 +106,13 @@ function sortTable($columnName, $order, $result)
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $search_condition = '';
 if (!empty($search)) {
-    $search_condition = "WHERE voornaam LIKE '%$search%'";
+    $search_condition = "WHERE voornaam LIKE '%$search%' OR achternaam LIKE '%$search%' OR gebruikersnaam LIKE '%$search%' OR functie LIKE '%$search%'";
 }
 
 $columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idmedewerker';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT * FROM medewerker";
+$query = "SELECT * FROM medewerker $search_condition";
 $result = $mysqli->query($query);
 
 $data = sortTable($columnName, $order, $result);

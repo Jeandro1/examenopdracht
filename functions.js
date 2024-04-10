@@ -1,3 +1,4 @@
+//medewerkers.php
 function openFormMedewerkers(rowId) {
     var row = document.getElementById('voornaam_' + rowId).parentNode.parentNode;
     var inputs = row.querySelectorAll('input[type=text], select');
@@ -29,6 +30,8 @@ function saveChangesMedewerkers(rowId) {
     document.getElementById('deleteButton_' + rowId).style.display = 'none';
 }
 
+
+//leveranciers.php
 function openFormLeveranciers(rowId) {
     var row = document.getElementById('bedrijfsnaam_' + rowId).parentNode.parentNode;
     var inputs = row.querySelectorAll('input[type=text], input[type=datetime-local]');
@@ -63,6 +66,8 @@ function saveChangesLeveranciers(rowId) {
     document.getElementById('deleteButton_' + rowId).style.display = 'none';
 }
 
+
+//voorraad.php
 function openFormProduct(rowId) {
     var row = document.getElementById('product_' + rowId).parentNode.parentNode;
     var inputs = row.querySelectorAll('input[type=text], select');
@@ -94,6 +99,8 @@ function saveChangesProduct(rowId) {
     document.getElementById('deleteButton_' + rowId).style.display = 'none';
 }
 
+
+//klanten.php
 function openFormGezin(rowId) {
     var row = document.getElementById('gezinsnaam_' + rowId).parentNode.parentNode;
     var inputs = row.querySelectorAll('input[type=text], input[type=number], input[type=checkbox], textarea');
@@ -126,4 +133,14 @@ function saveChangesGezin(rowId) {
 
     document.getElementById('saveButton_' + rowId).style.display = 'none';
     document.getElementById('deleteButton_' + rowId).style.display = 'none';
+}
+
+
+//samenstellen.php
+function selecteerGezin() {
+    preventDefault();
+    document.getElementById('overzichtgezin').style.display = 'none';
+    document.getElementById('overzichtvoorraad').style.display = 'block';
+    document.getElementById('overzichtpakket').style.display = 'block';
+    return false;
 }

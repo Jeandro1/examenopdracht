@@ -1,78 +1,17 @@
 <?php
 include('db.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['gebruikersnaam'])) {
+if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
     exit();
 }
 
-// Check user role
-if ($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger") {
+if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger"){
     header("location:account.php");
     exit();
 }
 
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pakketten</title>
-    <link rel="icon" type="image/png" href="images/icon.png">
-    <link rel="stylesheet" href="styling2.css">
-    <link rel="stylesheet" href="navbar.css">
-    <script>
-        function toevoegenAanOverzicht(idproduct) {
-            // Zoek de geselecteerde elementen
-            var ean = document.getElementById('EAN_' + idproduct).innerText;
-            var naam = document.getElementById('product_' + idproduct).innerText;
-            var aantal = document.getElementById('aantal_' + idproduct).innerText;
-            var categorie = document.getElementById('categorie_' + idproduct).innerText;
-
-            // Maak een nieuwe rij voor het overzicht
-            var newRow = "<tr id='rij_" + idproduct + "'>";
-            newRow += "<td>" + ean + "</td>";
-            newRow += "<td>" + naam + "</td>";
-            newRow += "<td>" + aantal + "</td>";
-            newRow += "<td>" + categorie + "</td>";
-            newRow += "<td><button onclick='verwijderUitOverzicht(" + idproduct + ")'>Verwijder</button></td>";
-            newRow += "</tr>";
-
-            // Voeg de nieuwe rij toe aan het overzicht
-            document.getElementById('overzichtTable').innerHTML += newRow;
-
-            // Toon de knop voor het verwijderen van producten
-            document.getElementById('verwijderButton').style.display = 'inline';
-        }
-
-        function verwijderUitOverzicht(idproduct) {
-            // Zoek de rij die verwijderd moet worden
-            var row = document.getElementById('rij_' + idproduct);
-            // Verwijder de rij uit de tabel
-            row.parentNode.removeChild(row);
-
-            // Verberg de knop voor het verwijderen van producten als er geen rijen meer zijn
-            if (document.getElementById('overzichtTable').getElementsByTagName('tr').length === 1) {
-                document.getElementById('verwijderButton').style.display = 'none';
-            }
-        }
-    </script>
-</head>
-
-<body>
-    <?php navbar(); 
-    $columnName = isset($_GET['sort']) ? $_GET['sort'] : 'product';
-$order = isset($_GET['order']) ? $_GET['order'] : 'asc';
-
-$query = "SELECT * FROM product";
-$result = $mysqli->query($query);
-function sortTable($columnName, $order, $result)
-{
+function sortTable($columnName, $order, $result){
     $data = array();
     
     while ($row = $result->fetch_assoc()) {
@@ -89,57 +28,72 @@ function sortTable($columnName, $order, $result)
 
     return $data;
 }
+
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$search_condition = '';
+if (!empty($search)) {
+    $search_condition = "WHERE idpakket LIKE '%$search%' OR datum_samenstelling LIKE '%$search%' OR datuum_uitgifte LIKE '%$search%' OR gezinsnaam LIKE '%$search%' OR adres LIKE '%$search%'";
+}
+
+$columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idpakket';
+$order = isset($_GET['order']) ? $_GET['order'] : 'asc';
+
+$query = "SELECT pakket.idpakket, pakket.datum_samenstelling, pakket.datum_uitgifte, gezin.gezinsnaam, gezin.adres, GROUP_CONCAT(CONCAT(product.product, ' ', pakket_has_product.product_aantal) SEPARATOR ' <> ') AS producten_aantallen
+          FROM pakket
+          LEFT JOIN gezin ON pakket.gezin_idgezin = gezin.idgezin
+          LEFT JOIN pakket_has_product ON pakket.idpakket = pakket_has_product.pakket_idpakket
+          LEFT JOIN product ON pakket_has_product.product_idproduct = product.idproduct
+          GROUP BY pakket.idpakket";
+$result = $mysqli->query($query);
+
 $data = sortTable($columnName, $order, $result);
+
 ?>
-                <div class="overzicht">
-                <table>
-                    <tr>
-                        <th><a href="?sort=EAN&order=<?= ($columnName === 'EAN' && $order === 'asc' ? 'desc' : 'asc') ?>">EAN</a></th>
-                        <th><a href="?sort=product&order=<?= ($columnName === 'product' && $order === 'asc' ? 'desc' : 'asc') ?>">Naam</a></th>
-                        <th><a href="?sort=aantal&order=<?= ($columnName === 'aantal' && $order === 'asc' ? 'desc' : 'asc') ?>">Aantal</a></th>
-                        <th><a href="?sort=categorie&order=<?= ($columnName === 'categorie' && $order === 'asc' ? 'desc' : 'asc') ?>">Categorie</a></th>
-                        <th><a>verzend</a></th>
-                    </tr>
-                    <?php
-                       foreach ($data as $row) {
-                            echo "<tr>";
-                            echo "
-                                <td><span id='EAN_" . $row['idproduct'] . "'>" . $row['EAN'] . "</span></td>
-                                <td><span id='product_" . $row['idproduct'] . "'>" . $row['product'] . "</span></td>
-                                <td><span id='aantal_" . $row['idproduct'] . "'>" . $row['aantal'] . "</span></td>
-                                <td><span id='categorie_" . $row['idproduct'] . "'>" . $row['categorie'] . "</span></td>
-                                <td><button onclick='toevoegenAanOverzicht(" . $row['idproduct'] . ")'>verzend</button></td>
-                            ";
-                            echo "</tr>";
-                        }
-                    ?>
-                </table>
-            </div>
-<div class="productoverzicht">
-        <table id="overzichtTable">
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pakketten</title>
+    <link rel="icon" type="image/png" href="images/icon.png">
+    <link rel="stylesheet" href="styling2.css">
+    <link rel="stylesheet" href="navbar.css">
+    <script src="functions.js"></script>
+</head>
+
+<body>
+    <?php navbar(); ?>  
+    <div>
+        <table>
             <tr>
-                <th>EAN</th>
-                <th>Naam</th>
-                <th>Aantal</th>
-                <th>Categorie</th>
-                <th>Verwijder</th>
+                <th><a href="?sort=idpakket&order=<?= ($columnName === 'idpakket' && $order === 'asc' ? 'desc' : 'asc') ?>">Pakket nummer</a></th>
+                <th><a href="?sort=datum_samenstelling&order=<?= ($columnName === 'datum_samenstelling' && $order === 'asc' ? 'desc' : 'asc') ?>">Datum samenstelling</a></th>
+                <th><a href="?sort=datum_uitgifte&order=<?= ($columnName === 'datum_uitgifte' && $order === 'asc' ? 'desc' : 'asc') ?>">Datum uitgifte</a></th>
+                <th><a href="?sort=gezinsnaam&order=<?= ($columnName === 'gezinsnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Gezinsnaam</a></th>
+                <th><a href="?sort=adres&order=<?= ($columnName === 'adres' && $order === 'asc' ? 'desc' : 'asc') ?>">Adres</a></th>
+                <th>
+                    <form action="" method="get">
+                        <input type="text" name="search" placeholder="Zoeken...">
+                        <input type="submit" value="Zoeken">
+                    </form>
+                </th>
             </tr>
+            <?php
+               foreach ($data as $row) {
+                echo "<tr>";
+                echo "<td>".$row['idpakket']."</td>";
+                echo "<td>".$row['datum_samenstelling']."</td>";
+                echo "<td>".$row['datum_uitgifte']."</td>";
+                echo "<td>".$row['gezinsnaam']."</td>";
+                echo "<td>".$row['adres']."</td>";
+                echo "<td>".$row['producten_aantallen']."</td>";
+                echo "</tr>";
+                }
+            ?>
         </table>
-        <ul>
-  
-        </ul>
-
     </div>
-
-
-   
-
- 
-       
-    </div>
-
-    <footer>
-    </footer>
 </body>
-
 </html>

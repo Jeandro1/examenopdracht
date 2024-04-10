@@ -2,24 +2,13 @@
 
 session_start();
 
-$servername = "localhost";
+$hostname = "localhost";
 $username = "root";
 $password = "";
 $dbname = "maaskantje";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+$mysqli = new mysqli($hostname, $username, $password, $dbname);
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-
-// Create connection
-$mysqli = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
 if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
@@ -46,8 +35,11 @@ function navbar(){
                 echo '<a href="klanten.php">
                     <p class="knop">Klanten</p>
                      </a>
-                   <a href="pakketten.php">
+                    <a href="pakketten.php">
                      <p class="knop">Pakketten</p>
+                   </a>
+                   <a href="samenstellen.php">
+                     <p class="knop">Samenstellen</p>
                    </a>';
             }
             if(!empty($_SESSION['functie'])){

@@ -172,13 +172,13 @@ function sortTable($columnName, $order, $result)
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $search_condition = '';
 if (!empty($search)) {
-    $search_condition = "WHERE product LIKE '%$search%'";
+    $search_condition = "WHERE EAN LIKE '%$search%' OR product LIKE '%$search%' OR aantal LIKE '%$search%' OR categorie LIKE '%$search%'";
 }
 
 $columnName = isset($_GET['sort']) ? $_GET['sort'] : 'product';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT * FROM product";
+$query = "SELECT * FROM product $search_condition";
 $result = $mysqli->query($query);
 
 $data = sortTable($columnName, $order, $result);
@@ -280,7 +280,7 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
         <form id='form_".$row['idproduct']."' action='' method='post' onsubmit='return saveChangesProduct(event, ".$row['idproduct'].")'> <!-- Voeg onsubmit toe -->
             <input type='hidden' name='idproduct' value='". $row['idproduct']. "'>
             <td>
-                <span id='EAN_".$row['idproduct']."' style='display: block;'>".$row['EAN']."</span>
+                ".$row['EAN']."
             </td>
             <td>
                 <span id='product_".$row['idproduct']."' style='display: block;'>".$row['product']."</span>
@@ -288,7 +288,7 @@ $resultcategorie = $mysqli->query($resultcategoriequery);
             </td>
             <td>
                 <span id='aantal_".$row['idproduct']."' style='display: block;'>".$row['aantal']."</span>
-                <input id='aantalInput_".$row['idproduct']."' type='number' name='aantal' value='". $row['aantal'] . "' style='display: none;' required>
+                <input id='aantalInput_".$row['idproduct']."' type='text' name='aantal' value='". $row['aantal'] . "' style='display: none;' required>
             </td>
             <td>
                 <span id='categorie_".$row['idproduct']."' style='display: block;'>".$row['categorie']."</span>
