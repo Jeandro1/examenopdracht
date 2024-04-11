@@ -1,8 +1,6 @@
 <?php
 include('db.php');
 
-unset($_POST);
-
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
     exit();
