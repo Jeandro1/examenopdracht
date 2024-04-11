@@ -107,7 +107,7 @@ if(isset($_POST['verwijderen'])) {
     $idproduct = $_POST['idproduct'];
 
     // Controleer of het product voorkomt in een pakket
-    $check_package_query = "SELECT * FROM pakket WHERE product_id = ?";
+    $check_package_query = "SELECT * FROM pakket_has_product WHERE product_idproduct = ?";
     $check_package_stmt = $mysqli->prepare($check_package_query);
     $check_package_stmt->bind_param("i", $idproduct);
     $check_package_stmt->execute();
