@@ -1,6 +1,8 @@
 <?php
 include('db.php');
 
+unset($_POST);
+
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
     exit();
@@ -50,6 +52,11 @@ if (isset($_POST['toevoegen'])) {
         if ($check_result->num_rows > 0) {
             echo "<script>alert('Er staat al een gezin geregistreerd op dit adres!');</script>";
         } else {
+            $autoincrement_query = "ALTER TABLE gezin AUTO_INCREMENT = 1";
+            $autoincrement = $mysqli->prepare($autoincrement_query);
+            $autoincrement->execute();
+            $autoincrement->close();
+
             $insert_query = "INSERT INTO gezin (gezinsnaam, adres, email, telefoonnummer, volwassenen, kinderen, babys, varkensvlees, veganistisch, vegetarisch, allergieen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $insert_stmt = $mysqli->prepare($insert_query);
 

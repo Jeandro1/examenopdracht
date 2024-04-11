@@ -1,6 +1,8 @@
 <?php
 include('db.php');
 
+unset($_POST);
+
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
     exit();
@@ -9,6 +11,17 @@ if(!isset($_SESSION['gebruikersnaam'])) {
 if($_SESSION['functie'] != "directie" && $_SESSION['functie'] != "vrijwilliger"){
     header("location:account.php");
     exit();
+}
+
+if(isset($_POST['afgegeven'])) {
+    $idpakket = $_POST['idpakket'];
+
+    $update_query = "UPDATE pakket SET datum_uitgifte=curdate() WHERE idpakket=?";
+    $update_stmt = $mysqli->prepare($update_query);
+    $update_stmt->bind_param("i", $idpakket);
+    $update_stmt->execute();
+
+    $update_stmt->close();
 }
 
 function sortTable($columnName, $order, $result){
@@ -86,7 +99,17 @@ $data = sortTable($columnName, $order, $result);
                 echo "<tr>";
                 echo "<td>".$row['idpakket']."</td>";
                 echo "<td>".$row['datum_samenstelling']."</td>";
-                echo "<td>".$row['datum_uitgifte']."</td>";
+                if(empty($row['datum_uitgifte'])){
+                    echo "<td> 
+                        <form action='' method='post'>
+                            <input type='hidden' name='idpakket' value='". $row['idpakket']. "'>
+                            <input type='submit' value='Afgegeven' name='afgegeven'>
+                        </form>
+                       </td>";
+                }
+                else{
+                    echo "<td>".$row['datum_uitgifte']."</td>";
+                }
                 echo "<td>".$row['gezinsnaam']."</td>";
                 echo "<td>".$row['adres']."</td>";
                 echo "<td>".$row['producten_aantallen']."</td>";

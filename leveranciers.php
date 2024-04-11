@@ -1,6 +1,8 @@
 <?php
 include('db.php');
 
+unset($_POST);
+
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
     exit();
@@ -29,7 +31,10 @@ if (isset($_POST['toevoegen'])) {
     if ($check_result->num_rows > 0) {
         echo "<script>alert('Deze levering bestaat al!');</script>";
     } else {
-    
+        $autoincrement_query = "ALTER TABLE leverancier AUTO_INCREMENT = 1";
+        $autoincrement = $mysqli->prepare($autoincrement_query);
+        $autoincrement->execute();
+        $autoincrement->close();
 
         $insert_query = "INSERT INTO leverancier (bedrijfsnaam, adres, naam, email, telefoonnummer,  volgende_levering) VALUES (?, ?, ?, ?, ?, ?)";
         $insert_stmt = $mysqli->prepare($insert_query);
@@ -203,7 +208,7 @@ foreach ($data as $row) {
                 <input id='volgende_leveringInput_".$row['idleverancier']."' type='datetime-local' name='volgende_levering' value='". date('Y-m-d\TH:i', strtotime($row['volgende_levering'])) . "' style='display: none;'>
             </td>
             <td>
-                <button type='button' onclick='openFormLeveranciers(".$row['idleverancier'].")'>Aanpassen</button>
+                <button id='aanpassenButton_".$row['idleverancier']."' type='button' onclick='openFormLeveranciers(".$row['idleverancier'].")'>Aanpassen</button>
                 <input id='saveButton_".$row['idleverancier']."' type='submit' value='Opslaan' name='aanpassen' style='display: none;'>
                 <input id='deleteButton_".$row['idleverancier']."' type='submit' value='Verwijderen' name='verwijderen' style='display: none;'>
             </td>

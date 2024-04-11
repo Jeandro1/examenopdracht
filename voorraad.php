@@ -1,6 +1,8 @@
 <?php
 include('db.php');
 
+unset($_POST);
+
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
     exit();
@@ -26,8 +28,12 @@ if (isset($_POST['toevoegen'])) {
     if ($check_result->num_rows > 0) {
         echo "<script>alert('Dit product bestaat al!');</script>";
     } else {
+        $autoincrement_query = "ALTER TABLE product AUTO_INCREMENT = 1";
+        $autoincrement = $mysqli->prepare($autoincrement_query);
+        $autoincrement->execute();
+        $autoincrement->close();
+        
         $EAN = generateUniqueEAN($mysqli);
-
         $insert_query = "INSERT INTO product (product, categorie, EAN, aantal) VALUES (?, ?, ?, ?)";
         $insert_stmt = $mysqli->prepare($insert_query);
 

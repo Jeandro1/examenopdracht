@@ -44,6 +44,7 @@ function openFormLeveranciers(rowId) {
 
     document.getElementById('saveButton_' + rowId).style.display = 'inline-block';
     document.getElementById('deleteButton_' + rowId).style.display = 'inline-block';
+    document.getElementById('aanpassenButton_' + rowId).style.display = 'none';
 }
 
 function saveChangesLeveranciers(rowId) {
@@ -133,14 +134,4 @@ function saveChangesGezin(rowId) {
 
     document.getElementById('saveButton_' + rowId).style.display = 'none';
     document.getElementById('deleteButton_' + rowId).style.display = 'none';
-}
-
-
-//samenstellen.php
-function selecteerGezin() {
-    preventDefault();
-    document.getElementById('overzichtgezin').style.display = 'none';
-    document.getElementById('overzichtvoorraad').style.display = 'block';
-    document.getElementById('overzichtpakket').style.display = 'block';
-    return false;
 }

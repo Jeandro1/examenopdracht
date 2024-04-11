@@ -1,6 +1,8 @@
 <?php
 include('db.php');
 
+unset($_POST);
+
 if(!isset($_SESSION['gebruikersnaam'])) {
     header("location:login.php");
     exit();
@@ -35,6 +37,10 @@ if (isset($_POST['toevoegen'])) {
         if ($check_result->num_rows > 0) {
             echo "<script>alert('Gebruikersnaam is al in gebruik!');</script>";
         } else {
+            $autoincrement_query = "ALTER TABLE medewerker AUTO_INCREMENT = 1";
+            $autoincrement = $mysqli->prepare($autoincrement_query);
+            $autoincrement->execute();
+            $autoincrement->close();
 
             $hashedwachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
             $insert_query = "INSERT INTO medewerker (voornaam, achternaam, gebruikersnaam, wachtwoord, functie) VALUES (?, ?, ?, ?, ?)";

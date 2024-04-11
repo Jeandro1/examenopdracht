@@ -24,16 +24,6 @@ $message = "";
 </head>
 
 <body>
-    <div class="navbar1">
-        <img class="navicon" src="images/icon.png" href="index.php">
-        <div class="navitems">
-            <a href="login.php">
-                <p class="groeneknop">Inloggen</p>
-            </a>
-        </div>
-    </div>
-
-    <!-- ----------------------------------------------------------------------------------------------------------- -->
 
     <h4 class="center">Let op! Deze pagina is alleen voor medewerkers.</h4>
 
