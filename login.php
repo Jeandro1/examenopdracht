@@ -24,8 +24,11 @@ $message = "";
 </head>
 
 <body>
+    <a href="index.php">
+        <img class="navicon" src="images/icon.png" href="index.php">
+    </a>
 
-    <h4 class="center">Let op! Deze pagina is alleen voor medewerkers.</h4>
+    <h2 class="center">Medewerkers login</h2><br>
 
     <div class="forms">
         <form action="" method="post">

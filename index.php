@@ -12,28 +12,16 @@
 </head>
 
 <body>
-    <div class="navbar1">
-        <a href="index.php">
-            <img class="navicon" src="images/icon.png" href="index.php">
-        </a>
-        <div class="navitems">
-            <a href="login.php">
-                <p class="groeneknop">Inloggen</p>
-            </a>
-        </div>
-    </div>
-
-    <!-- ----------------------------------------------------------------------------------------------------------- -->
-
+    <a href="index.php">
+        <img class="navicon" src="images/icon.png" href="index.php">
+    </a>
     <div class="center">
         <h1>Welkom bij Voedselbank Maaskantje</h1>
         <h3>Waar iedereen een goede maaltijd verdient</h3>
         <h4>Stuur een mail naar voedselbankmaaskantje@gmail.com om in aanmerking te komen voor voedselpakketten.</h4>
+        <a href="login.php">
+            <p class="centerknop">Inloggen</p>
+        </a>
     </div>
-
-    <!-- ----------------------------------------------------------------------------------------------------------- -->
-
-    <footer>
-    </footer>
 </body>
 </html>
