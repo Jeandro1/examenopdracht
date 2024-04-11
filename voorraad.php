@@ -106,14 +106,28 @@ function generateUniqueEAN($mysqli) {
 if(isset($_POST['verwijderen'])) {
     $idproduct = $_POST['idproduct'];
 
-    $delete_query = "DELETE FROM product WHERE idproduct = ?";
-    $delete_stmt = $mysqli->prepare($delete_query);
+    // Controleer of het product voorkomt in een pakket
+    $check_package_query = "SELECT * FROM pakket WHERE product_id = ?";
+    $check_package_stmt = $mysqli->prepare($check_package_query);
+    $check_package_stmt->bind_param("i", $idproduct);
+    $check_package_stmt->execute();
+    $check_package_result = $check_package_stmt->get_result();
 
-    $delete_stmt->bind_param("i", $idproduct);
-    $delete_stmt->execute();
+    if ($check_package_result->num_rows > 0) {
+        echo "<script>alert('Dit product kan niet worden verwijderd omdat het in een pakket zit.');</script>";
+    } else {
+        // Voer de verwijderactie uit als het product niet in een pakket zit
+        $delete_query = "DELETE FROM product WHERE idproduct = ?";
+        $delete_stmt = $mysqli->prepare($delete_query);
 
-    $delete_stmt->close();
+        $delete_stmt->bind_param("i", $idproduct);
+        $delete_stmt->execute();
+
+        $delete_stmt->close();
+    }
 }
+
+
 
 if(isset($_POST['aanpassen'])) {
     $idproduct = $_POST['idproduct'];
