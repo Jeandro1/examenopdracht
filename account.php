@@ -67,7 +67,7 @@ if (isset($_POST['aanpassen'])) {
 
     <!-- ----------------------------------------------------------------------------------------------------------- -->
 
-    <div class="gebruikersinvoegen">
+    <div>
             <table>
                 <tr>
                     <th>Voornaam</th>
@@ -109,22 +109,5 @@ if (isset($_POST['aanpassen'])) {
         </form>
 </div>
 
-<div class="forms">
-    <form action="" method="post">
-        <?php
-        if(isset($_POST["loguitknop"])){
-            session_destroy();
-            header("location:login.php");
-            exit();
-        }
-        ?>
-        <div class="formitem"><input type="submit" name="loguitknop" value="Log uit"></div>
-    </form>
-</div>
-
-    <!-- ----------------------------------------------------------------------------------------------------------- -->
-
-    <footer>
-    </footer>
 </body>
 </html>

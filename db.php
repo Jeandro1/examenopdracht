@@ -45,8 +45,16 @@ function navbar(){
             if(!empty($_SESSION['functie'])){
                 echo '<a href="account.php">
                 <p class="knop">Account</p>
-            </a>';
+                </a>
+                <form action="" method="post">
+                  <input type="submit" name="loguitknop" value="Log uit">
+                </form>';
             }
+            if(isset($_POST["loguitknop"])){
+              session_destroy();
+              header("location:login.php");
+              exit();
+          }
             echo "</div></div>";
 }
 

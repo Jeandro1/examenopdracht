@@ -135,7 +135,7 @@ $data = sortTable($columnName, $order, $result);
 <body>
     <?php navbar(); ?>  
 
-    <div class="gebruikersinvoegen">
+    <div>
         <form action="" method="post">
             <table>
                 <tr>
