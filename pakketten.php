@@ -49,7 +49,7 @@ if (!empty($search)) {
 $columnName = isset($_GET['sort']) ? $_GET['sort'] : 'idpakket';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-$query = "SELECT pakket.idpakket, pakket.datum_samenstelling, pakket.datum_uitgifte, gezin.gezinsnaam, gezin.adres, GROUP_CONCAT(CONCAT(product.product, ' ', pakket_has_product.product_aantal) SEPARATOR ' <> ') AS producten_aantallen
+$query = "SELECT pakket.idpakket, pakket.datum_samenstelling, pakket.datum_uitgifte, gezin.gezinsnaam, gezin.adres, GROUP_CONCAT(CONCAT(product.product, ':', pakket_has_product.product_aantal) SEPARATOR '<br>') AS producten_aantallen
           FROM pakket
           LEFT JOIN gezin ON pakket.gezin_idgezin = gezin.idgezin
           LEFT JOIN pakket_has_product ON pakket.idpakket = pakket_has_product.pakket_idpakket
@@ -86,10 +86,6 @@ $data = sortTable($columnName, $order, $result);
                 <th><a href="?sort=gezinsnaam&order=<?= ($columnName === 'gezinsnaam' && $order === 'asc' ? 'desc' : 'asc') ?>">Gezinsnaam</a></th>
                 <th><a href="?sort=adres&order=<?= ($columnName === 'adres' && $order === 'asc' ? 'desc' : 'asc') ?>">Adres</a></th>
                 <th>
-                    <form action="" method="get">
-                        <input type="text" name="search" placeholder="Zoeken...">
-                        <input type="submit" value="Zoeken">
-                    </form>
                 </th>
             </tr>
             <?php
